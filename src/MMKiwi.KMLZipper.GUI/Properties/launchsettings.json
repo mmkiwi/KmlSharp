@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "MMKiwi.KMLZipper.GUI (Unpackaged)": {
+      "commandName": "Project",
+      "nativeDebugging": false,
+      "hotReloadEnabled": true
+    },
+    "MMKiwi.KMLZipper.GUI (Package)": {
+      "commandName": "MsixPackage"
+    }
+  }
+}
