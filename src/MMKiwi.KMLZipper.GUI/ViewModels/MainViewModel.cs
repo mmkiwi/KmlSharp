@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
@@ -15,7 +16,16 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using MMKiwi.KMLZipper.Core.Services;
 using MMKiwi.KMLZipper.GUI.Contracts.Services;
 using MMKiwi.KMLZipper.GUI.Core.Models;
+using MMKiwi.KMLZipper.GUI.Helpers;
 using MMKiwi.KMLZipper.GUI.ViewModels.Icons;
+
+using NodaTime;
+using NodaTime.Text;
+
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Metadata.Profiles.Exif;
+using SixLabors.ImageSharp.Processing;
 
 using Windows.Graphics.Imaging;
 using Windows.Networking.BackgroundTransfer;
@@ -23,6 +33,8 @@ using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
+
+using ExifOrientationMode = SixLabors.ImageSharp.Metadata.Profiles.Exif.ExifOrientationMode;
 
 namespace MMKiwi.KMLZipper.GUI.ViewModels;
 
@@ -125,7 +137,8 @@ public partial class MainViewModel : ObservableRecipient
             return;
         }
 
-        List<Task<TranformationItem>> photoTasks = new();
+        //List<TranformationItem> photoInfo = new();
+        ConcurrentBag<TranformationItem> photoInfo = new();
         StorageFolder userTemp = await StorageFolder.GetFolderFromPathAsync(Path.GetTempPath());
         StorageFolder tempFolder = await userTemp.CreateFolderAsync(Path.GetRandomFileName());
         StorageFolder tempImgFolder = await tempFolder.CreateFolderAsync("images");
@@ -133,14 +146,18 @@ public partial class MainViewModel : ObservableRecipient
         {
             var downloadTask = DownloadIcon(tempFolder, ct);
 
-            foreach (StorageFile photo in PhotoList)
+            await Parallel.ForEachAsync(PhotoList, new ParallelOptions
             {
-                photoTasks.Add(ProcessPhoto(tempImgFolder, photo));
-            }
+                CancellationToken = ct,
+                MaxDegreeOfParallelism = 2
+            },  async (photo, ct) =>
+            {
+                photoInfo.Add(await ProcessPhoto(tempImgFolder, photo, ct));
+            });
+            
 
             StorageFile kmlFile = await tempFolder.CreateFileAsync("document.kml");
 
-            TranformationItem[] photoInfo = await Task.WhenAll(photoTasks);
             TranformationProperties properties = new(Name, photoInfo.ToImmutableArray(), RotateIcons, "icon.png");
             TransformService svc = new(properties);
 
@@ -168,57 +185,66 @@ public partial class MainViewModel : ObservableRecipient
         }
     }
 
-    private static async Task<TranformationItem> ProcessPhoto(StorageFolder tempImgFolder, StorageFile photo)
+    private static async Task<TranformationItem> ProcessPhoto(StorageFolder tempImgFolder, StorageFile photo, CancellationToken ct)
     {
-        IRandomAccessStream photoStream = await photo.OpenAsync(FileAccessMode.Read);
-
-        const string bearingKey = "System.GPS.DestBearing";
-
-        ImageProperties props = await photo.Properties.GetImagePropertiesAsync();
-        var extraProps = await props.RetrievePropertiesAsync(new List<string> { bearingKey });
-        double? bearing = extraProps.ContainsKey(bearingKey) ? (double)extraProps[bearingKey] : null;
-
-        BitmapDecoder decoder = await BitmapDecoder.CreateAsync(photoStream);
-
-        if (decoder.PixelWidth > 480)
+        try
         {
+            Stream photoStream = await photo.OpenStreamForReadAsync();
+
+
+            var resTuple = await Image.LoadWithFormatAsync(photoStream, ct);
+            using var image = resTuple.Image;
+            IExifValue<ushort>? orientation = image.Metadata.ExifProfile.GetValue(ExifTag.Orientation);
+            IExifValue<Rational[]>? latitudeRat = image.Metadata.ExifProfile.GetValue(ExifTag.GPSLatitude);
+            IExifValue<string>? latitudeRef = image.Metadata.ExifProfile.GetValue(ExifTag.GPSLatitudeRef);
+            IExifValue<Rational[]>? longitudeRat = image.Metadata.ExifProfile.GetValue(ExifTag.GPSLongitude);
+            IExifValue<string>? longitudeRef = image.Metadata.ExifProfile.GetValue(ExifTag.GPSLongitudeRef);
+            IExifValue<Rational>? bearing = image.Metadata.ExifProfile.GetValue(ExifTag.GPSDestBearing);
+            IExifValue<string>? dateTakenTxt = image.Metadata.ExifProfile.GetValue(ExifTag.DateTimeOriginal);
+            IExifValue<string>? dateTakenOffsetTxt = image.Metadata.ExifProfile.GetValue(ExifTag.OffsetTimeOriginal);
+
+            double? longitude = longitudeRat?.Value.ToDouble() * (longitudeRef?.Value == "W" ? -1 : 1);
+            double? latitude = latitudeRat?.Value.ToDouble() * (latitudeRef?.Value == "S" ? -1 : 1);
+
+#warning todo error handling
+            LocalDateTime? localDateTaken = dateTakenTxt != null ? LocalDateTimePattern.CreateWithInvariantCulture("yyyy:MM:dd HH:mm:ss").Parse(dateTakenTxt.Value).Value : null;
+            Offset? dateTakenOffset = dateTakenOffsetTxt != null ? OffsetPattern.GeneralInvariant.Parse(dateTakenOffsetTxt.Value).Value : null;
+
+            OffsetDateTime? dateTaken = dateTakenOffset != null && localDateTaken != null ? new(localDateTaken.Value, dateTakenOffset.Value) : null;
+
+            image.Mutate(x => x
+                 .Resize(480, 640, KnownResamplers.Lanczos8)
+                 .Flip(orientation?.Value switch
+                 {
+                     2 or 4 or 5 or 7 => FlipMode.Horizontal,
+                     _ => FlipMode.None
+                 })
+                 .Rotate(orientation?.Value switch
+                 {
+                     8 or 7 => RotateMode.Rotate270,
+                     3 or 4 => RotateMode.Rotate180,
+                     6 or 5 => RotateMode.Rotate90,
+                     _ => RotateMode.None,
+                 })); ;
+
             var outPhoto = await tempImgFolder.CreateFileAsync(photo.Name, CreationCollisionOption.GenerateUniqueName);
-
-            using var outStream = await outPhoto.OpenAsync(FileAccessMode.ReadWrite);
-            BitmapEncoder encoder = await BitmapEncoder.CreateForTranscodingAsync(outStream, decoder);
-
-            double scaleRatio = (double)480 / decoder.PixelWidth;
-
-
-            uint aspectHeight = (uint)Math.Floor(decoder.PixelHeight * scaleRatio);
-            uint aspectWidth = (uint)Math.Floor(decoder.PixelWidth * scaleRatio);
-
-            encoder.BitmapTransform.InterpolationMode = BitmapInterpolationMode.Cubic;
-
-            encoder.BitmapTransform.ScaledHeight = aspectHeight;
-            encoder.BitmapTransform.ScaledWidth = aspectWidth;
-            encoder.BitmapTransform.Rotation = props.Orientation switch
-            {
-                PhotoOrientation.Rotate180 => BitmapRotation.Clockwise180Degrees,
-                PhotoOrientation.Rotate270 => BitmapRotation.Clockwise270Degrees,
-                PhotoOrientation.Rotate90 => BitmapRotation.Clockwise90Degrees,
-                _ => BitmapRotation.None
-            };
-
-            await encoder.FlushAsync();
-        }
-        else
-        {
-            await photo.CopyAsync(tempImgFolder);
-        }
-
-        return new TranformationItem(photo.Name, photo.Path, props.Longitude ?? 0, props.Latitude ?? 0, bearing ?? 0, new Dictionary<string, string>
+            using var outStream = await outPhoto.OpenStreamForWriteAsync();
+            await image.SaveAsync(outStream, resTuple.Format);
+            
+            return new TranformationItem(photo.Name, photo.Path, longitude ?? 0, latitude ?? 0, bearing?.Value.ToDouble() ?? 0, 
+                new Dictionary<string, string>
                 {
-                    { "Date Taken", props.DateTaken.ToString("mmm d, yyyy h:mm tt") ?? "Unknown"},
-                    { "Longitude", props.Longitude?.ToString() ?? "Unknown"},
-                    { "Latitude", props.Latitude?.ToString() ?? "Unknown"},
+                    { "Date Taken", dateTaken.ToString() ?? "Unknown"},
+                    { "Longitude", longitude?.ToString() ?? "Unknown"},
+                    { "Latitude", latitude?.ToString() ?? "Unknown"},
                     { "Direction", bearing?.ToString() ?? "Unknown"}
                 });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw;
+        }
     }
 
     public bool CanRemoveImage => SelectedPhoto != null;
