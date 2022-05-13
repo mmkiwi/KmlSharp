@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32427.441
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MMKiwi.KMZipper.GUI", "src\MMKiwi.KMZipper.GUI\MMKiwi.KMZipper.GUI.csproj", "{ED837B2E-0F77-4511-BFC7-A8D51956FCD0}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MMKiwi.KMZipper.KmlFormat", "src\MMKiwi.KMZipper.KmlFormat\MMKiwi.KMZipper.KmlFormat.csproj", "{2497FF75-0114-43CD-AA0D-6232AFDB73DC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MMKiwi.KMZipper.Core", "src\MMKiwi.KMZipper.Core\MMKiwi.KMZipper.Core.csproj", "{E1A1B0AA-F7DD-4E7C-96D6-542A3C92E25C}"
@@ -15,8 +13,6 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MMKiwi.KMZipper.Uno.Shared"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MMKiwi.KMZipper.Uno.Windows", "src\MMKiwi.KMZipper.Uno\MMKiwi.KMZipper.Uno.Windows\MMKiwi.KMZipper.Uno.Windows.csproj", "{1C6639C7-4E54-436B-A844-A2D2222EA1F0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App1", "App1\App1.csproj", "{B7058F1A-444F-4239-93A6-CA5629F60DD1}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -25,14 +21,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{ED837B2E-0F77-4511-BFC7-A8D51956FCD0}.Debug|x64.ActiveCfg = Debug|x64
-		{ED837B2E-0F77-4511-BFC7-A8D51956FCD0}.Debug|x64.Build.0 = Debug|x64
-		{ED837B2E-0F77-4511-BFC7-A8D51956FCD0}.Debug|x86.ActiveCfg = Debug|x86
-		{ED837B2E-0F77-4511-BFC7-A8D51956FCD0}.Debug|x86.Build.0 = Debug|x86
-		{ED837B2E-0F77-4511-BFC7-A8D51956FCD0}.Release|x64.ActiveCfg = Release|x64
-		{ED837B2E-0F77-4511-BFC7-A8D51956FCD0}.Release|x64.Build.0 = Release|x64
-		{ED837B2E-0F77-4511-BFC7-A8D51956FCD0}.Release|x86.ActiveCfg = Release|x86
-		{ED837B2E-0F77-4511-BFC7-A8D51956FCD0}.Release|x86.Build.0 = Release|x86
 		{2497FF75-0114-43CD-AA0D-6232AFDB73DC}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{2497FF75-0114-43CD-AA0D-6232AFDB73DC}.Debug|x64.Build.0 = Debug|Any CPU
 		{2497FF75-0114-43CD-AA0D-6232AFDB73DC}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -61,18 +49,6 @@ Global
 		{1C6639C7-4E54-436B-A844-A2D2222EA1F0}.Release|x86.ActiveCfg = Release|x86
 		{1C6639C7-4E54-436B-A844-A2D2222EA1F0}.Release|x86.Build.0 = Release|x86
 		{1C6639C7-4E54-436B-A844-A2D2222EA1F0}.Release|x86.Deploy.0 = Release|x86
-		{B7058F1A-444F-4239-93A6-CA5629F60DD1}.Debug|x64.ActiveCfg = Debug|x64
-		{B7058F1A-444F-4239-93A6-CA5629F60DD1}.Debug|x64.Build.0 = Debug|x64
-		{B7058F1A-444F-4239-93A6-CA5629F60DD1}.Debug|x64.Deploy.0 = Debug|x64
-		{B7058F1A-444F-4239-93A6-CA5629F60DD1}.Debug|x86.ActiveCfg = Debug|x86
-		{B7058F1A-444F-4239-93A6-CA5629F60DD1}.Debug|x86.Build.0 = Debug|x86
-		{B7058F1A-444F-4239-93A6-CA5629F60DD1}.Debug|x86.Deploy.0 = Debug|x86
-		{B7058F1A-444F-4239-93A6-CA5629F60DD1}.Release|x64.ActiveCfg = Release|x64
-		{B7058F1A-444F-4239-93A6-CA5629F60DD1}.Release|x64.Build.0 = Release|x64
-		{B7058F1A-444F-4239-93A6-CA5629F60DD1}.Release|x64.Deploy.0 = Release|x64
-		{B7058F1A-444F-4239-93A6-CA5629F60DD1}.Release|x86.ActiveCfg = Release|x86
-		{B7058F1A-444F-4239-93A6-CA5629F60DD1}.Release|x86.Build.0 = Release|x86
-		{B7058F1A-444F-4239-93A6-CA5629F60DD1}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

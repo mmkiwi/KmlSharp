@@ -10,19 +10,15 @@
 		<PublishProfile>win10-$(Platform).pubxml</PublishProfile>
 		<UseWinUI>true</UseWinUI>
 		<EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  <!-- This bundles the .NET Core libraries -->
-<SelfContained>true</SelfContained>
-<!-- This bundles the WinUI3 components -->
-<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
-	</PropertyGroup>
-	
-	<PropertyGroup>
-		<!-- Bundles the WinAppSDK binaries (Uncomment for unpackaged builds) -->
-		<!-- <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained> -->
-		<!-- This bundles the .NET Core libraries (Uncomment for packaged builds)  -->
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<!-- This bundles the .NET Core libraries -->
 		<SelfContained>true</SelfContained>
+		<!-- This bundles the WinUI3 components -->
+		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
 		<ProduceReferenceAssembly>False</ProduceReferenceAssembly>
 	</PropertyGroup>
@@ -38,14 +34,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.0-preview3" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.0-preview3" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0-preview3" />
-    <PackageReference Include="NodaTime" Version="3.1.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0-preview3" />
+		<PackageReference Include="NodaTime" Version="3.1.0" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="2.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 
@@ -56,8 +52,8 @@
 		<ProjectCapability Include="Msix" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\..\MMKiwi.KMZipper.Core\MMKiwi.KMZipper.Core.csproj" />
+		<ProjectReference Include="..\..\MMKiwi.KMZipper.Core\MMKiwi.KMZipper.Core.csproj" />
 	</ItemGroup>
 
-  <Import Project="..\MMKiwi.KMZipper.Uno.Shared\MMKiwi.KMZipper.Uno.Shared.projitems" Label="Shared" />
+	<Import Project="..\MMKiwi.KMZipper.Uno.Shared\MMKiwi.KMZipper.Uno.Shared.projitems" Label="Shared" />
 </Project>
