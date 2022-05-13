@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
-using System.Net;
-using System.Runtime.InteropServices.WindowsRuntime;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 
 using MMKiwi.KMZipper.Core.Services;
 using MMKiwi.KMZipper.GUI.Contracts.Services;
@@ -23,18 +17,11 @@ using NodaTime;
 using NodaTime.Text;
 
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using SixLabors.ImageSharp.Processing;
 
-using Windows.Graphics.Imaging;
-using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
-using Windows.Storage.FileProperties;
-using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
-
-using ExifOrientationMode = SixLabors.ImageSharp.Metadata.Profiles.Exif.ExifOrientationMode;
 
 namespace MMKiwi.KMZipper.GUI.ViewModels;
 

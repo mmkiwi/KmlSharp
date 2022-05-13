@@ -1,0 +1,10 @@
+{
+	"profiles": {
+		"MMKiwi.KMZipper.Uno.Windows (Package)": {
+			"commandName": "MsixPackage"
+		},
+		"MMKiwi.KMZipper.Uno.Windows (Unpackaged)": {
+			"commandName": "Project"
+		}
+	}
+}

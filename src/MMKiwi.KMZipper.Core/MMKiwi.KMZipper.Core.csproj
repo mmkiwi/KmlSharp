@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>MMKiwi.KMZipper.Core</RootNamespace>
-    <Platforms>x86;x64;arm64;AnyCPU</Platforms>
+    <Platforms>AnyCPU;x64;x86</Platforms>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

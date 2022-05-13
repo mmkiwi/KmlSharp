@@ -1,0 +1,14 @@
+{
+  "solution": {
+    "path": "MMKiwi.KMZipper.Uno.sln",
+    "projects": [
+		"MMKiwi.KMZipper.Uno.Shared\\MMKiwi.KMZipper.Uno.Shared.shproj",
+
+		"MMKiwi.KMZipper.Uno.Mobile\\MMKiwi.KMZipper.Uno.Mobile.csproj",
+
+		"MMKiwi.KMZipper.Uno.Wasm\\MMKiwi.KMZipper.Uno.Wasm.csproj",
+
+		"MMKiwi.KMZipper.Uno.Skia.Gtk\\MMKiwi.KMZipper.Uno.Skia.Gtk.csproj",
+    ]
+  }
+}
