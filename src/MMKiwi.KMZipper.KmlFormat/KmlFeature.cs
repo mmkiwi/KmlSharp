@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace MMKiwi.KMZipper.KmlFormat;
 
 public abstract class KmlFeature: KmlObject
@@ -9,43 +11,51 @@ public abstract class KmlFeature: KmlObject
 
     }
 
-    [XmlElement("name")]
+    [XmlElement("name", Namespace = "http://schemas.opengis.net/kml/2.3", IsNullable = false)]
     public string? Name { get; set; }
 
-    [XmlElement("visibility")]
+    [XmlElement("visibility", Namespace = "http://schemas.opengis.net/kml/2.3")]
     public bool? Visibility { get; set; }
+    
+    [EditorBrowsableAttribute(EditorBrowsableState.Never)]
+    public bool ShouldSerializeVisibility() => Visibility.HasValue;
 
-    [XmlElement("open")]
+    [XmlElement("open", Namespace = "http://schemas.opengis.net/kml/2.3")]
     public bool? Open { get; set; }
 
-    [XmlElement("address")]
+    [EditorBrowsableAttribute(EditorBrowsableState.Never)]
+    public virtual bool ShouldSerializeOpen() => Open.HasValue;
+
+    [XmlElement("address", Namespace = "http://schemas.opengis.net/kml/2.3", IsNullable = false)]
     public string? Address { get; set; }
 
-    [XmlElement("phoneNumber")]
+    [XmlElement("phoneNumber", Namespace = "http://schemas.opengis.net/kml/2.3", IsNullable = false)]
     public string? PhoneNumber { get; set; }
 
-    [XmlElement("Snippet")]
+    [XmlElement("Snippet", Namespace = "http://schemas.opengis.net/kml/2.3", IsNullable = false)]
     public KmlSnippet? Snippet { get; set; }
 
-    [XmlElement("description")]
+    [XmlElement("description", Namespace = "http://schemas.opengis.net/kml/2.3", IsNullable = false)]
     public XmlCDataSection? Description
     {
         get => description == null ? null : new XmlDocument().CreateCDataSection(description);
         set => description = value?.Value;
     }
-    [XmlElement]
+    [XmlElement("AbstractView", Namespace = "http://schemas.opengis.net/kml/2.3", IsNullable = false)]
     public KmlCamera? AbstractView {get;set;}
 
-    [XmlElement]
+    [XmlElement("TimePrimitive", Namespace = "http://schemas.opengis.net/kml/2.3", IsNullable = false)]
     public KmlTimePrimitive? TimePrimitive {get;set;}
 
-    [XmlElement("styleUrl")]
+    [XmlElement("styleUrl", Namespace = "http://schemas.opengis.net/kml/2.3", IsNullable = false)]
     public KmlStyleUri? StyleUrl {get;set;}
 
-    [XmlElement]
+    [XmlElement("StyleSelector", Namespace = "http://schemas.opengis.net/kml/2.3", IsNullable = false)]
     public KmlSubStyle? StyleSelector {get;set;}
 
-    public KmlRegion? Region {get;set;}
+    [XmlElement("Region", Namespace = "http://schemas.opengis.net/kml/2.3", IsNullable = false)]
+    public KmlRegion? Region {get;set; }
 
+    [XmlElement("ExtendedData", Namespace = "http://schemas.opengis.net/kml/2.3", IsNullable = false)]
     public KmlExtendedData? ExtendedData {get;set;}
 }

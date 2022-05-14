@@ -1,4 +1,6 @@
 namespace MMKiwi.KMZipper.KmlFormat;
 
-public record struct KmlStyleUri(string Uri)
-{ }
+public class KmlStyleUri
+{
+    public string? Uri { get; set; }
+}
