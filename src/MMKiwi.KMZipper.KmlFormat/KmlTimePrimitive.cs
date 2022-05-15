@@ -1,5 +1,5 @@
 namespace MMKiwi.KMZipper.KmlFormat;
 
-public class KmlTimePrimitive: KmlObject
+public abstract class KmlTimePrimitive: KmlObject
 {
 }

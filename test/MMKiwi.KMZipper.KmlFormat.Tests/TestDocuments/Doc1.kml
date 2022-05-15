@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<kml version="2.2.0" xmlns="http://www.opengis.net/kml/2.2">
+  <NetworkLinkControl />
+  <Folder>
+    <name>Test</name>
+    <description><![CDATA[<html><head><body>Hey &amp; Hi </body></html>]]></description>
+    <Document>
+      <name>Whoa</name>
+    </Document>
+  </Folder>
+</kml>

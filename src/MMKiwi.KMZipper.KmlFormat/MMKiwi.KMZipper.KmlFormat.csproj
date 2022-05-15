@@ -14,4 +14,11 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\util\MMKiwi.AsyncXmlSerializer\MMKiwi.AsyncXmlSerializer.csproj" />
+    <ProjectReference Include="..\..\util\MMKiwi.XmlSerializerSG\MMKiwi.XmlSerializerSG.csproj"
+                      OutputItemType="X"
+                      ReferenceOutputAssembly="false"/>
+  </ItemGroup>
+
 </Project>

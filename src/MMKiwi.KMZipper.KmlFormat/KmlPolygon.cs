@@ -1,6 +1,6 @@
 ﻿namespace MMKiwi.KMZipper.KmlFormat;
 
-public class KmlLineString : KmlGeometry
+public class KmlPolygon : KmlGeometry
 {
     [XmlElement("extrude", Namespace = KmlNs.Kml)]
     public bool? Extrude { get; set; }
@@ -20,8 +20,13 @@ public class KmlLineString : KmlGeometry
     [EditorBrowsable(EditorBrowsableState.Never)]
     public bool ShouldSerializeAltitudeMode() => AltitudeMode.HasValue;
 
-    [XmlElement("coordinates", Namespace = KmlNs.Kml)]
-    public KmlCoordinatesMultiple? Coordinates { get; set; }
+    [XmlArray("outerBoundaryIs", IsNullable = false, Namespace = KmlNs.Kml)]
+    [XmlArrayItem("LinearRing", IsNullable = false, Namespace = KmlNs.Kml)]
+    public KmlLinearRing? OuterBoundary { get; set; }
 
-    public override string TagName => "LineString";
+    [XmlArray("innerBoundaryIs", IsNullable = false, Namespace =KmlNs.Kml)]
+    [XmlArrayItem("LinearRing", IsNullable = false, Namespace = KmlNs.Kml)]
+    public KmlLinearRing[]? InnerBoundary { get; set; }
+
+    public override string TagName => "Polygon";
 }

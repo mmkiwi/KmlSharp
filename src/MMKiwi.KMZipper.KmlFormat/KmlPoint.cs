@@ -16,4 +16,6 @@ public class KmlPoint : KmlGeometry
 
     [XmlElement("coordinates", Namespace = KmlNs.Kml, IsNullable = false)]
     public KmlCoordinates? Coordinates { get; set; }
+
+    public override string TagName => "Point";
 }

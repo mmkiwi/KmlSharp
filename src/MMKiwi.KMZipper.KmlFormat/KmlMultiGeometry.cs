@@ -9,4 +9,6 @@ public class KmlMultiGeometry : KmlGeometry
     [XmlElement("MultiGeometry", Type = typeof(KmlMultiGeometry), Namespace = KmlNs.Kml)]
     [XmlElement("Model", Type = typeof(KmlModel), Namespace = KmlNs.Kml)]
     public KmlGeometry[]? Geometries { get; set; }
+
+    public override string TagName => "MultiGeometry";
 }

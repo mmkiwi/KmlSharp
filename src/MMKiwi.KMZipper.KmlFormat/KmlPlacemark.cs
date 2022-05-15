@@ -10,4 +10,6 @@ public class KmlPlacemark:KmlContainer
     [XmlElement("MultiGeometry", Type = typeof(KmlMultiGeometry), Namespace = KmlNs.Kml)]
     [XmlElement("Model", Type = typeof(KmlModel), Namespace = KmlNs.Kml)]
     public KmlGeometry? Geometry { get; set; }
+
+    public override string TagName => "Placemark";
 }

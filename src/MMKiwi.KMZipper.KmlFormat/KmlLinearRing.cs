@@ -22,4 +22,6 @@ public class KmlLinearRing : KmlGeometry
 
     [XmlElement("coordinates", Namespace = KmlNs.Kml)]
     public KmlCoordinatesMultiple? Coordinates { get; set; }
+
+    public override string TagName => "LinearRing";
 }

@@ -1,27 +1,20 @@
+
 using System.ComponentModel;
 
 namespace MMKiwi.KMZipper.KmlFormat;
 
-public sealed class KmlSnippet {
+public sealed class KmlSnippet: KmlBase {
 
-    [XmlIgnore]
     public int? MaxLines { get;set;} = 2;
 
-    [XmlText]
-    public string? Text {get; set;}
+    public string Text { get; set; } = string.Empty;
 
-    [XmlAttribute("maxLines", Namespace = "http://schemas.opengis.net/kml/2.3")]
-    private string? MaxLinesAttr
+    public override string TagName => "snippet";
+
+    private protected override Task<UnknownNodes> ReadXmlAsyncImpl(XmlReaderHelper reader) => throw new NotImplementedException();
+    private protected async override Task WriteXmlAsyncImpl(XmlWriterHelper writer)
     {
-        get => MaxLines.HasValue ? MaxLines.Value.ToString() : null;
-        set
-        {
-            if (value == null)
-                MaxLines = null;
-            else MaxLines = int.Parse(value);
-        }
+        await writer.WriteAttributeIfNotNullAsync("maxLines", MaxLines?.ToString());
+        await writer.WriteStringAsync(Text);
     }
-
-    [EditorBrowsableAttribute(EditorBrowsableState.Never)]
-    public bool ShouldSerializeMaxLinesAttr() => MaxLines.HasValue;
 }
