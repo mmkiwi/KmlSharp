@@ -26,4 +26,10 @@
     <ProjectReference Include="..\..\src\MMKiwi.KMZipper.KmlFormat\MMKiwi.KMZipper.KmlFormat.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="TestDocuments\ogckml22.mod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+
 </Project>

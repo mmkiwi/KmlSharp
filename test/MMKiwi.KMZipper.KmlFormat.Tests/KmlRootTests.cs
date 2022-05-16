@@ -74,19 +74,29 @@ public class KmlRootTests
     }
 
     [Fact]
-    public void TestDeserializeAttributes()
+    public async Task TestDeserializeAttributes()
     {
         const string rootTest = $"""
-            <kml version="{VersionValue}" hint="{HintValue}" xmlns="{KmlNs.Kml}" />
+            <kml version="{VersionValue}" hint="{HintValue}" xmlns="{KmlNs.Kml}">
+                <Document>
+                    <name>Testyyy</name>
+                </Document>
+            </kml>
             """;
 
         using StringReader sr = new(rootTest);
-        KmlRoot? root = KmlSerialization.Deserialize<KmlRoot>(sr);
+        using XmlReader xr = XmlReader.Create(sr, new XmlReaderSettings()
+        {
+            Async = true
+        });
+        KmlRoot? root = new();
+        await root.ReadXmlAsync(xr);
 
         using AssertionScope scope = new();
         root.Should().NotBeNull();
         root!.Hint.Should().Be(HintValue);
         root!.Version.Should().Be(new KmlVersion(VersionValue));
+        root!.RootFeature.Should().BeOfType<KmlDocument>().Which.Name.Should().Be("Testyyy");
     }
 
     [Fact]
@@ -95,10 +105,9 @@ public class KmlRootTests
         KmlRoot root = new KmlRoot()
         {
             Version = null,
-            Features = new()
-            {
+            RootFeature =
                 new KmlFolder { }
-            }
+
         };
 
         XDocument xDoc = await root.ToXDocument();
@@ -139,18 +148,20 @@ public class KmlRootTests
         KmlRoot root = new KmlRoot()
         {
             NetworkLinkControl = new(),
-            Features = new()
-            {
+            RootFeature =
             new KmlFolder()
             {
-                Name="Test",
-                Description="<html><head><body>Hey &amp; Hi </body></html>"
-            },
-            new KmlDocument()
-            {
-                Name="Whoa"
+                Name = "Test",
+                Description = "<html><head><body>Hey &amp; Hi </body></html>",
+                ChildFeatures = new()
+                {
+                    new KmlDocument()
+                    {
+                        Name="Whoa"
+                    }
+                }
             }
-            }
+
         };
 
         XDocument xDoc = await root.ToXDocument();
