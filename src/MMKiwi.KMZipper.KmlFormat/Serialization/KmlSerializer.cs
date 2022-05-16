@@ -11,7 +11,6 @@ public static partial class KmlSerializer
 {
     private static Dictionary<Type, Lazy<object>> Serializers { get; } 
 
-
     static KmlSerializer()
     {
         Serializers = new();
@@ -38,10 +37,9 @@ public static partial class KmlSerializer
     public static async Task<T?> DeserializeAsync<T>(XmlReader reader)
     {
         ISerializationHelper<T>? serializationHelper = GetSerializer<T>();
-        if (serializationHelper == null)
-            throw new ArgumentException($"Could not find serializer for {typeof(T)}", nameof(T));
-
-        return await serializationHelper.ReadRootTagAsync(reader);
+        return serializationHelper != null
+            ? await serializationHelper.ReadRootTagAsync(reader)
+            : throw new ArgumentException($"Could not find serializer for {typeof(T)}", nameof(T));
     }
 
     private static ISerializationHelper<T>? GetSerializer<T>()

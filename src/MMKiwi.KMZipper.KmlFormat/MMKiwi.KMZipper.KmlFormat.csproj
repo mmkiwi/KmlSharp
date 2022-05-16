@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>10.0</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,23 +12,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <!--
     <PackageReference Include="Microsoft.XmlSerializer.Generator" Version="6.0.0" />
-
   </ItemGroup>
   <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.XmlSerializer.Generator" Version="6.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\util\MMKiwi.AsyncXmlSerializer\MMKiwi.AsyncXmlSerializer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EditorConfigFiles Remove="I:\Temp\Dev\KMZipper\src\MMKiwi.KMZipper.KmlFormat\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="I:\Temp\Dev\KMZipper\src\MMKiwi.KMZipper.KmlFormat\.editorconfig" />
+    <DotNetCliToolReference Include="Microsoft.XmlSerializer.Generator" Version="6.0.0" />-->
   </ItemGroup>
 
 

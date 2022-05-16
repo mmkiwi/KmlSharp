@@ -8,7 +8,9 @@ public static class RationalExtensions
     {
         double result = 0;
         for (int i = 0; i < portions.Length; i++)
+        {
             result += portions[i].ToDouble() / Math.Pow(60, i);
+        }
 
         return result;
     }

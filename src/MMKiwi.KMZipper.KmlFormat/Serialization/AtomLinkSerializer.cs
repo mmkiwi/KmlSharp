@@ -12,7 +12,7 @@ internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
     {
         _ = reader.MoveToElement();
         (bool Href, bool Rel, bool Type, bool HrefLang, bool Title, bool Length) read = default;
-        
+
         var o = new AtomLink();
         HashSet<string> alreadyLoaded = new();
         while (reader.MoveToNextAttribute())
@@ -34,17 +34,15 @@ internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
         // ensure Href was writting
         if (o.Href == null)
             throw new InvalidDataException("<atom:link /> requires href attribute");
-        if(reader.NodeType != XmlNodeType.None)
+        if (reader.NodeType != XmlNodeType.None)
             reader.ReadEndElement();
         return o;
     }
 
-
     public override async Task WriteTagAsync(XmlWriter writer, AtomLink obj, XmlNamespaceManager? ns = null)
     {
-        const bool prefixAttributes = false;
         string prefix = "";
-        if(prefixAttributes)
+        if (PrefixAttributes)
             prefix = ns?.LookupPrefix(Namespaces.Atom) ?? "";
 
         if (obj == null)
@@ -61,8 +59,7 @@ internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
         if (obj.Title != null)
             await writer.WriteAttributeStringAsync(prefix, "title", Namespaces.Atom, obj.Title.ToString());
         if (obj.Length.HasValue)
-            await writer.WriteAttributeStringAsync(prefix, "length", Namespaces.Atom,
-                obj.Length.Value.ToString(CultureInfo.InvariantCulture));
+            await writer.WriteAttributeStringAsync(prefix, "length", Namespaces.Atom, obj.Length.Value.ToString(CultureInfo.InvariantCulture));
         await writer.WriteEndElementAsync();
     }
 }

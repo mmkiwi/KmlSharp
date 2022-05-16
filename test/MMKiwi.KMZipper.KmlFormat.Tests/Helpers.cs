@@ -2,7 +2,6 @@
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using System.Diagnostics;
-using MMKiwi.AsyncXmlSerializer;
 using MMKiwi.KMZipper.KmlFormat.Serialization;
 
 namespace MMKiwi.KMZipper.KmlFormat.Tests;

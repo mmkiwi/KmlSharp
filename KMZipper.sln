@@ -20,11 +20,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D15925C0
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MMKiwi.KMZipper.KmlFormat.Tests", "test\MMKiwi.KMZipper.KmlFormat.Tests\MMKiwi.KMZipper.KmlFormat.Tests.csproj", "{0E083B81-FC5B-417E-A15B-E2FA5DB32D0B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "util", "util", "{7CED281D-0F63-44D9-9E90-1887173C8C44}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MMKiwi.AsyncXmlSerializer", "util\MMKiwi.AsyncXmlSerializer\MMKiwi.AsyncXmlSerializer.csproj", "{FF13E576-7657-4E27-91E6-C76F742794FD}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D7FA0475-C893-49A3-AFA4-BFE078FE2BD9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7C8EC675-554C-4892-977F-49CF9C84CB79}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,18 +89,6 @@ Global
 		{0E083B81-FC5B-417E-A15B-E2FA5DB32D0B}.Release|x64.Build.0 = Release|Any CPU
 		{0E083B81-FC5B-417E-A15B-E2FA5DB32D0B}.Release|x86.ActiveCfg = Release|Any CPU
 		{0E083B81-FC5B-417E-A15B-E2FA5DB32D0B}.Release|x86.Build.0 = Release|Any CPU
-		{FF13E576-7657-4E27-91E6-C76F742794FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FF13E576-7657-4E27-91E6-C76F742794FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FF13E576-7657-4E27-91E6-C76F742794FD}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{FF13E576-7657-4E27-91E6-C76F742794FD}.Debug|x64.Build.0 = Debug|Any CPU
-		{FF13E576-7657-4E27-91E6-C76F742794FD}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{FF13E576-7657-4E27-91E6-C76F742794FD}.Debug|x86.Build.0 = Debug|Any CPU
-		{FF13E576-7657-4E27-91E6-C76F742794FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FF13E576-7657-4E27-91E6-C76F742794FD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FF13E576-7657-4E27-91E6-C76F742794FD}.Release|x64.ActiveCfg = Release|Any CPU
-		{FF13E576-7657-4E27-91E6-C76F742794FD}.Release|x64.Build.0 = Release|Any CPU
-		{FF13E576-7657-4E27-91E6-C76F742794FD}.Release|x86.ActiveCfg = Release|Any CPU
-		{FF13E576-7657-4E27-91E6-C76F742794FD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,7 +97,6 @@ Global
 		{6279C845-92F8-4333-AB99-3D213163593C} = {0ED01097-63E8-4923-9FC3-2323D511BCE3}
 		{1C6639C7-4E54-436B-A844-A2D2222EA1F0} = {0ED01097-63E8-4923-9FC3-2323D511BCE3}
 		{0E083B81-FC5B-417E-A15B-E2FA5DB32D0B} = {D15925C0-BCC5-4BD3-912E-A6692F87D9E0}
-		{FF13E576-7657-4E27-91E6-C76F742794FD} = {7CED281D-0F63-44D9-9E90-1887173C8C44}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {421C039C-ACE1-4B27-A7AD-45DE20ED217C}
