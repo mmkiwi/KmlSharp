@@ -3,7 +3,6 @@
 global using FluentAssertions;
 
 global using MMKiwi.KMZipper.KmlFormat;
-global using MMKiwi.KMZipper.KmlFormat.Utilities;
 
 global using System.Xml;
 global using System.Xml.Linq;
