@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -16,9 +16,19 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\util\MMKiwi.AsyncXmlSerializer\MMKiwi.AsyncXmlSerializer.csproj" />
-    <ProjectReference Include="..\..\util\MMKiwi.XmlSerializerSG\MMKiwi.XmlSerializerSG.csproj"
-                      OutputItemType="X"
-                      ReferenceOutputAssembly="false"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Atom\atom-author-link.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="ogckml22.mod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="xAL\" />
   </ItemGroup>
 
 </Project>
