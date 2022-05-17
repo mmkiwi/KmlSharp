@@ -1,15 +1,16 @@
-﻿using MMKiwi.KMZipper.GUI.Core.Models;
+﻿// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MMKiwi.KMZipper.Core.Models;
 
 namespace MMKiwi.KMZipper.Core.Services;
 public sealed class TransformService
 {
-    public TransformService(KmzSaveProperties properties) => Properties = properties;
+    public TransformService(KmzSaveProperties properties)
+    {
+        Properties = properties;
+    }
 
     public KmzSaveProperties Properties { get; }
 
@@ -54,8 +55,14 @@ public sealed class TransformService
 """;
     }
 
-    private object TranformItems() => string.Join("\n", Properties.Items.Select(item => TransformItem(item)));
-	private string? TransformItem(KmzPhotoInfo item) => $"""
+    private object TranformItems()
+    {
+        return string.Join("\n", Properties.Items.Select(TransformItem));
+    }
+
+    private string? TransformItem(KmzPhotoInfo item)
+    {
+        return $"""
 		<Placemark>
 			<name>{item.FileName}</name>
 			<description>
@@ -96,7 +103,7 @@ public sealed class TransformService
 				<range>{Properties.Range}</range>
 				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
 			</LookAt>
-			{ TransformOrientation(item) }
+			{TransformOrientation(item)}
 			<styleUrl>#m_ylw-pushpin</styleUrl>
 			<Point>
 				<gx:drawOrder>1</gx:drawOrder>
@@ -104,18 +111,31 @@ public sealed class TransformService
 			</Point>
 		</Placemark>
 """;
-    private string TranformFields(KmzPhotoInfo item) => string.Join("\n", item.Fields.Select(field => TransformField(field)));
-	private string TransformField(KeyValuePair<string, string> field) => $"""
+    }
+
+    private string TranformFields(KmzPhotoInfo item)
+    {
+        return string.Join("\n", item.Fields.Select(TransformField));
+    }
+
+    private string TransformField(KeyValuePair<string, string> field)
+    {
+        return $"""
 								<tr>
 									<th>{field.Key}</th>
 									<td>{field.Value}</td>
 								</tr>
 """;
-    private string TransformOrientation(KmzPhotoInfo item) => Properties.RotateIcons ? $"""
+    }
+
+    private string TransformOrientation(KmzPhotoInfo item)
+    {
+        return Properties.RotateIcons ? $"""
 			<Style>
 				<IconStyle>
 					<heading>{item.Orientation}</heading>
 				</IconStyle>
 			</Style>
 """ : string.Empty;
+    }
 }

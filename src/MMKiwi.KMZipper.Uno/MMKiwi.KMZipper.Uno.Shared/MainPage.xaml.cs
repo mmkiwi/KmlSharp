@@ -1,50 +1,41 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using MMKiwi.KMZipper.Uno.ViewModels.Icons;
+
 using MMKiwi.KMZipper.Uno.ViewModels;
+using MMKiwi.KMZipper.Uno.ViewModels.Icons;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
-namespace MMKiwi.KMZipper.Uno
+namespace MMKiwi.KMZipper.Uno;
+
+/// <summary>
+/// An empty page that can be used on its own or navigated to within a Frame.
+/// </summary>
+public sealed partial class MainPage : Page
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class MainPage : Page
+    public MainViewModel ViewModel { get; }
+
+    public MainPage()
     {
-        public MainViewModel ViewModel { get; }
+        ViewModel = App.GetService<MainViewModel>() ?? throw new InvalidOperationException($"Could not get {nameof(MainViewModel)}");
 
-        public MainPage()
+        InitializeComponent();
+        if (Resources.TryGetValue("Icons", out object iconObj) && iconObj is IDictionary<object, object> icons)
         {
-            ViewModel = App.GetService<MainViewModel>() ?? throw new InvalidOperationException($"Could not get {nameof(MainViewModel)}");
-
-            InitializeComponent();
-            if (Resources.TryGetValue("Icons", out object iconObj) && iconObj is IDictionary<object, object> icons)
+            foreach ((object key, object value) in icons)
             {
-                foreach ((object key, object value) in icons)
+                if (value is IIconInfo iconValue)
                 {
-                    if (value is IIconInfo iconValue)
-                    {
-                        ViewModel.IconList.Add(iconValue);
-                    }
+                    ViewModel.IconList.Add(iconValue);
                 }
             }
-            else
-            {
-                throw new Exception();
-            }
+        }
+        else
+        {
+            throw new Exception();
         }
     }
 }

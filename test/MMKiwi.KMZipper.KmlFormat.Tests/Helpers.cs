@@ -1,7 +1,9 @@
-﻿
-using System.Xml.Linq;
-using System.Xml.Serialization;
+﻿// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 using System.Diagnostics;
+
 using MMKiwi.KMZipper.KmlFormat.Serialization;
 
 namespace MMKiwi.KMZipper.KmlFormat.Tests;
@@ -12,7 +14,7 @@ internal static class Helpers
     public static async Task<T?> Deserialize<T>(this string input)
     {
         using StringReader str = new(input);
-        using var reader = XmlReader.Create(str, new XmlReaderSettings()
+        using XmlReader? reader = XmlReader.Create(str, new XmlReaderSettings()
         {
             Async = true,
         });
@@ -21,12 +23,12 @@ internal static class Helpers
 
     public static async Task<XDocument> ToXDocument<T>(this T input)
     {
-        var ns = new XmlNamespaceManager(new NameTable());
+        XmlNamespaceManager? ns = new(new NameTable());
         ns.AddNamespace("", Namespaces.Kml);
         ns.AddNamespace("atom", Namespaces.Atom);
 
         using MemoryStream memStm = new();
-        using var writer = XmlWriter.Create(memStm, new()
+        using XmlWriter? writer = XmlWriter.Create(memStm, new()
         {
             Async = true,
             NamespaceHandling = NamespaceHandling.OmitDuplicates,

@@ -1,4 +1,8 @@
-﻿using MMKiwi.KMZipper.KmlFormat.Atom;
+﻿// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+using MMKiwi.KMZipper.KmlFormat.Atom;
 
 namespace MMKiwi.KMZipper.KmlFormat.Tests;
 public class AtomAuthorTests
@@ -8,7 +12,7 @@ public class AtomAuthorTests
     {
         AtomAuthor author = new("John Doe");
         XDocument xDoc = await author.ToXDocument();
-        xDoc.Should().BeEquivalentTo(new XDocument(
+        _ = xDoc.Should().BeEquivalentTo(new XDocument(
             new XElement(XName.Get("author", Namespaces.Atom),
             new XElement(XName.Get("name", Namespaces.Atom), "John Doe"))));
     }
@@ -22,7 +26,7 @@ public class AtomAuthorTests
             Uri = new("https://example.com")
         };
         XDocument xDoc = await author.ToXDocument();
-        xDoc.Should().BeEquivalentTo(new XDocument(
+        _ = xDoc.Should().BeEquivalentTo(new XDocument(
             new XElement(XName.Get("author", Namespaces.Atom),
                 new XElement(XName.Get("name", Namespaces.Atom), "John Doe"),
                 new XElement(XName.Get("email", Namespaces.Atom), "test@gmail.com"),
@@ -37,7 +41,7 @@ public class AtomAuthorTests
         const string xml = $"""
             <author xmlns="{Namespaces.Atom}" />
             """;
-        await xml.Awaiting(x => x.Deserialize<AtomAuthor>()).Should().ThrowAsync<InvalidDataException>();
+        _ = await xml.Awaiting(x => x.Deserialize<AtomAuthor>()).Should().ThrowAsync<InvalidDataException>();
     }
 
     [Fact]
@@ -50,7 +54,7 @@ public class AtomAuthorTests
             """;
         AtomAuthor author = new("John Doe");
         AtomAuthor? compObbject = await xml.Deserialize<AtomAuthor>();
-        compObbject.Should().BeEquivalentTo(author);
+        _ = compObbject.Should().BeEquivalentTo(author);
     }
 
     [Fact]
@@ -69,6 +73,6 @@ public class AtomAuthorTests
             Uri = new("http://google.com")
         };
         AtomAuthor? compObject = await xml.Deserialize<AtomAuthor>();
-        compObject.Should().BeEquivalentTo(author);
+        _ = compObject.Should().BeEquivalentTo(author);
     }
 }

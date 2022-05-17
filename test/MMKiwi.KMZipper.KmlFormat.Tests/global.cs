@@ -1,11 +1,10 @@
-﻿global using Xunit;
-
-global using FluentAssertions;
-
-global using MMKiwi.KMZipper.KmlFormat;
+﻿// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 global using System.Xml;
 global using System.Xml.Linq;
-global using System.Xml.Serialization;
 
-using System.Diagnostics.CodeAnalysis;
+global using FluentAssertions;
+
+global using Xunit;

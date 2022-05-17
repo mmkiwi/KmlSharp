@@ -1,17 +1,23 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-using MMKiwi.KMZipper.Core.Services; 
-using Microsoft.Extensions.Hosting;
-using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
-using UnhandledExceptionEventArgs = Microsoft.UI.Xaml.UnhandledExceptionEventArgs;
-using MMKiwi.KMZipper.Uno.Services;
-using Microsoft.Extensions.DependencyInjection;
+
 using MMKiwi.KMZipper.Core.Contracts.Services;
+using MMKiwi.KMZipper.Core.Services;
+using MMKiwi.KMZipper.Uno.Services;
 using MMKiwi.KMZipper.Uno.ViewModels;
+
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.Activation;
+
+using UnhandledExceptionEventArgs = Microsoft.UI.Xaml.UnhandledExceptionEventArgs;
 
 namespace MMKiwi.KMZipper.Uno;
 
@@ -39,17 +45,19 @@ public sealed partial class App : Application
             // Core Services
             _ = services.AddSingleton<IFileService, FileService>();
 
-        // Views and ViewModels
+            // Views and ViewModels
             _ = services.AddTransient<MainViewModel>();
             _ = services.AddTransient<MainPage>();
 
-        // Configuration
+            // Configuration
         })
         .Build();
 
     public static T? GetService<T>()
         where T : class
-        => _host.Services.GetService(typeof(T)) as T;
+    {
+        return _host.Services.GetService(typeof(T)) as T;
+    }
 
     public static Window MainWindow { get; set; } = new Window() { };
 
@@ -98,7 +106,7 @@ public sealed partial class App : Application
 			_window = Microsoft.UI.Xaml.Window.Current;
 #endif
 
-        var rootFrame = _window.Content as Frame;
+        Frame? rootFrame = _window.Content as Frame;
 
         // Do not repeat app initialization when the Window already has content,
         // just ensure that the window is active
@@ -139,7 +147,10 @@ public sealed partial class App : Application
     /// </summary>
     /// <param name="sender">The Frame which failed navigation</param>
     /// <param name="e">Details about the navigation failure</param>
-    void OnNavigationFailed(object sender, NavigationFailedEventArgs e) => throw new InvalidOperationException($"Failed to load {e.SourcePageType.FullName}: {e.Exception}");
+    private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+    {
+        throw new InvalidOperationException($"Failed to load {e.SourcePageType.FullName}: {e.Exception}");
+    }
 
     /// <summary>
     /// Invoked when application execution is being suspended.  Application state is saved

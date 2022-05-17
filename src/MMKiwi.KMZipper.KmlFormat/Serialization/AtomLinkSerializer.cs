@@ -1,4 +1,8 @@
-﻿using System.Globalization;
+﻿// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+using System.Globalization;
 
 using MMKiwi.KMZipper.KmlFormat.Atom;
 
@@ -12,11 +16,10 @@ internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
     protected override string Tag => "link";
     public static string StaticTag => "link";
 
-
     public static async Task<AtomLink> StaticReadTagAsync(XmlReader reader)
     {
         _ = reader.MoveToElement();
-        var o = new AtomLink();
+        AtomLink? o = new();
         HashSet<string> alreadyLoaded = new();
         while (reader.MoveToNextAttribute())
         {
@@ -42,10 +45,11 @@ internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
         return o;
     }
 
-    public static async Task StaticWriteTagAsync(XmlWriter writer, AtomLink obj, XmlNamespaceManager? ns = null)
+    public static async Task StaticWriteTagAsync(XmlWriter writer, AtomLink obj, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
     {
+        options ??= KmlWriteOptions.Default;
         string prefix = "";
-        if (false)// (PrefixAttributes)
+        if (options.EmitAttributeNamespaces)
             prefix = ns?.LookupPrefix(Namespaces.Atom) ?? "";
 
         if (obj == null)
@@ -66,7 +70,13 @@ internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
         await writer.WriteEndElementAsync();
     }
 
-    public override Task<AtomLink> ReadTagAsync(XmlReader reader) => StaticReadTagAsync(reader);
+    public override Task<AtomLink> ReadTagAsync(XmlReader reader)
+    {
+        return StaticReadTagAsync(reader);
+    }
 
-    public override Task WriteTagAsync(XmlWriter writer, AtomLink o, XmlNamespaceManager? ns = null) => StaticWriteTagAsync(writer, o, ns);
+    public override Task WriteTagAsync(XmlWriter writer, AtomLink o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
+    {
+        return StaticWriteTagAsync(writer, o, ns, options);
+    }
 }

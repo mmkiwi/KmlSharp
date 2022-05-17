@@ -1,4 +1,8 @@
-﻿using MMKiwi.KMZipper.KmlFormat.Kml;
+﻿// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+using MMKiwi.KMZipper.KmlFormat.Kml;
 
 namespace MMKiwi.KMZipper.KmlFormat.Serialization;
 internal class KmlObjectSerializer : IAbstractSerializationHelper<KmlAbstractObject>
@@ -16,6 +20,7 @@ internal class KmlObjectSerializer : IAbstractSerializationHelper<KmlAbstractObj
             return false;
         return true;
     }
+
     public static async Task WriteAbstractAttributesAsync(XmlWriter writer, KmlAbstractObject o, string prefix, XmlNamespaceManager? ns = null)
     {
         if (o.Id != null)
@@ -23,17 +28,33 @@ internal class KmlObjectSerializer : IAbstractSerializationHelper<KmlAbstractObj
         if (o.TargetId != null)
             await writer.WriteAttributeStringAsync(prefix, "targetId", Namespaces.Atom, o.TargetId);
     }
-    public static Task WriteAbstractElementsAsync(XmlWriter writer, KmlAbstractObject o, XmlNamespaceManager? ns = null) => Task.CompletedTask;
+    public static Task WriteAbstractElementsAsync(XmlWriter writer, KmlAbstractObject o, XmlNamespaceManager? ns = null)
+    {
+        return Task.CompletedTask;
+    }
 
-    public static Task<bool> ReadAbstractElementsAsync(XmlReader reader, KmlAbstractObject o, HashSet<string> alreadyLoaded) => Task.FromResult(false);
+    public static Task<bool> ReadAbstractElementsAsync(XmlReader reader, KmlAbstractObject o, HashSet<string> alreadyLoaded)
+    {
+        return Task.FromResult(false);
+    }
 
     Task<bool> IAbstractSerializationHelper<KmlAbstractObject>.ReadAbstractAttributesAsync(XmlReader reader, KmlAbstractObject o, HashSet<string> alreadyLoaded)
-    => ReadAbstractAttributesAsync(reader, o, alreadyLoaded);
-    Task IAbstractSerializationHelper<KmlAbstractObject>.WriteAbstractAttributesAsync(XmlWriter writer, KmlAbstractObject o, string prefix, XmlNamespaceManager? ns)
-        => WriteAbstractAttributesAsync(writer, o, prefix, ns);
-    Task IAbstractSerializationHelper<KmlAbstractObject>.WriteAbstractElementsAsync(XmlWriter writer, KmlAbstractObject o, XmlNamespaceManager? ns) 
-        => WriteAbstractElementsAsync(writer, o,ns);
+    {
+        return ReadAbstractAttributesAsync(reader, o, alreadyLoaded);
+    }
 
-    Task<bool> IAbstractSerializationHelper<KmlAbstractObject>.ReadAbstractElementsAsync(XmlReader reader, KmlAbstractObject o, HashSet<string> alreadyLoaded) 
-        => ReadAbstractElementsAsync(reader, o, alreadyLoaded);
+    Task IAbstractSerializationHelper<KmlAbstractObject>.WriteAbstractAttributesAsync(XmlWriter writer, KmlAbstractObject o, string prefix, XmlNamespaceManager? ns)
+    {
+        return WriteAbstractAttributesAsync(writer, o, prefix, ns);
+    }
+
+    Task IAbstractSerializationHelper<KmlAbstractObject>.WriteAbstractElementsAsync(XmlWriter writer, KmlAbstractObject o, XmlNamespaceManager? ns)
+    {
+        return WriteAbstractElementsAsync(writer, o, ns);
+    }
+
+    Task<bool> IAbstractSerializationHelper<KmlAbstractObject>.ReadAbstractElementsAsync(XmlReader reader, KmlAbstractObject o, HashSet<string> alreadyLoaded)
+    {
+        return ReadAbstractElementsAsync(reader, o, alreadyLoaded);
+    }
 }

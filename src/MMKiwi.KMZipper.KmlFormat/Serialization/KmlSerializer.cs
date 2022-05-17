@@ -1,20 +1,18 @@
-﻿using MMKiwi.KMZipper.KmlFormat.Atom;
+﻿// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MMKiwi.KMZipper.KmlFormat.Atom;
 
 namespace MMKiwi.KMZipper.KmlFormat.Serialization;
 public static partial class KmlSerializer
 {
-    private static Dictionary<Type, Lazy<object>> Serializers { get; } 
+    private static Dictionary<Type, Lazy<object>> Serializers { get; }
 
     static KmlSerializer()
     {
         Serializers = new();
-        AddSerializer<AtomAuthor,AtomAuthorSerializer>();
+        AddSerializer<AtomAuthor, AtomAuthorSerializer>();
         AddSerializer<AtomLink, AtomLinkSerializer>();
     }
 
@@ -43,5 +41,7 @@ public static partial class KmlSerializer
     }
 
     private static ISerializationHelper<T>? GetSerializer<T>()
-        => Serializers.ContainsKey(typeof(T)) ? Serializers[typeof(T)].Value as ISerializationHelper<T> : null;
+    {
+        return Serializers.ContainsKey(typeof(T)) ? Serializers[typeof(T)].Value as ISerializationHelper<T> : null;
+    }
 }

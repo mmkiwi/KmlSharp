@@ -1,20 +1,18 @@
-﻿using System;
+﻿// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
-using System.Net;
-using System.Runtime.InteropServices.WindowsRuntime;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-
+using MMKiwi.KMZipper.Core.Models;
 using MMKiwi.KMZipper.Core.Services;
-using MMKiwi.KMZipper.GUI.Core.Models;
 using MMKiwi.KMZipper.Uno.Extensions;
 using MMKiwi.KMZipper.Uno.Services;
 using MMKiwi.KMZipper.Uno.ViewModels.Icons;
@@ -27,14 +25,8 @@ using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using SixLabors.ImageSharp.Processing;
 
-using Windows.Graphics.Imaging;
-using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
-using Windows.Storage.FileProperties;
-using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
-
-using ExifOrientationMode = SixLabors.ImageSharp.Metadata.Profiles.Exif.ExifOrientationMode;
 
 namespace MMKiwi.KMZipper.Uno.ViewModels;
 
@@ -52,26 +44,26 @@ public partial class MainViewModel : ObservableRecipient
     [ObservableProperty]
     [AlsoNotifyChangeFor(nameof(IsValid))]
     [AlsoNotifyCanExecuteFor(nameof(ProcessCommand))]
-    private string name = "";
+    private string _name = "";
 
     [ObservableProperty]
-    private bool rotateIcons = true;
+    private bool _rotateIcons = true;
 
     public ObservableCollection<StorageFile> PhotoList { get; } = new();
     public ObservableCollection<IIconInfo> IconList { get; } = new();
 
     [ObservableProperty]
     [AlsoNotifyCanExecuteFor(nameof(RemoveImageCommand))]
-    public StorageFile? _selectedPhoto;
+    private StorageFile? _selectedPhoto;
 
     [ObservableProperty]
-    private IIconInfo? selectedIcon;
+    private IIconInfo? _selectedIcon;
 
     [ICommand(AllowConcurrentExecutions = false)]
     public async Task CustomIcon()
     {
-        IFilePicker Picker = App.GetService<IFilePicker>() ?? throw new InvalidOperationException($"Could not get {nameof(IFilePicker)}");
-        StorageFile? file = await Picker.OpenFileAsync(new ExtensionInfo("Icon Files", ".png"));
+        IFilePicker picker = App.GetService<IFilePicker>() ?? throw new InvalidOperationException($"Could not get {nameof(IFilePicker)}");
+        StorageFile? file = await picker.OpenFileAsync(new ExtensionInfo("Icon Files", ".png"));
         if (file != null)
         {
             IconList.Add(new ImageIconInfo
@@ -84,15 +76,17 @@ public partial class MainViewModel : ObservableRecipient
     [ICommand(AllowConcurrentExecutions = false)]
     public async Task AddImage()
     {
-        IFilePicker Picker = App.GetService<IFilePicker>() ?? throw new InvalidOperationException($"Could not get {nameof(IFilePicker)}");
-        IEnumerable<StorageFile>? files = await Picker.OpenFilesAsync(new ExtensionInfo("Image Files", ".png", ".jpg", ".jpeg", ".tiff", ".tif"));
+        IFilePicker picker = App.GetService<IFilePicker>() ?? throw new InvalidOperationException($"Could not get {nameof(IFilePicker)}");
+        IEnumerable<StorageFile>? files = await picker.OpenFilesAsync(new ExtensionInfo("Image Files", ".png", ".jpg", ".jpeg", ".tiff", ".tif"));
         if (files != null)
         {
             foreach (StorageFile? file in files)
+            {
                 if (file != null)
                 {
                     PhotoList.Add(file);
                 }
+            }
         }
     }
 #if WINDOWS10_0_17763_0_OR_GREATER
@@ -103,10 +97,10 @@ public partial class MainViewModel : ObservableRecipient
 
     private async Task DownloadIcon(StorageFolder tempFolder, CancellationToken ct = default)
     {
-        var iconFile = await tempFolder.CreateFileAsync("icon.png");
+        StorageFile? iconFile = await tempFolder.CreateFileAsync("icon.png");
         if (SelectedIcon is ImageIconInfo imageIcon && imageIcon.File != null)
         {
-            await imageIcon.File.CopyAndReplaceAsync(iconFile).AsTask();
+            await imageIcon.File.CopyAndReplaceAsync(iconFile).AsTask(cancellationToken: ct);
         }
         else if (SelectedIcon is UriIconInfo uriIcon && uriIcon.Uri != null)
         {
@@ -131,8 +125,8 @@ public partial class MainViewModel : ObservableRecipient
     public async Task Process(CancellationToken ct = default)
     {
         if (IsValid == false) return;
-        IFilePicker Picker = App.GetService<IFilePicker>() ?? throw new InvalidOperationException($"Could not get {nameof(IFilePicker)}");
-        StorageFile? kmzFile = await Picker.SaveFileAsync(new ExtensionInfo("KMZ Files", ".kmz"));
+        IFilePicker picker = App.GetService<IFilePicker>() ?? throw new InvalidOperationException($"Could not get {nameof(IFilePicker)}");
+        StorageFile? kmzFile = await picker.SaveFileAsync(new ExtensionInfo("KMZ Files", ".kmz"));
         if (kmzFile == null)
         {
             return;
@@ -145,17 +139,14 @@ public partial class MainViewModel : ObservableRecipient
         StorageFolder tempImgFolder = await tempFolder.CreateFolderAsync("images");
         try
         {
-            var downloadTask = DownloadIcon(tempFolder, ct);
+            Task? downloadTask = DownloadIcon(tempFolder, ct);
 
             await Parallel.ForEachAsync(PhotoList, new ParallelOptions
             {
                 CancellationToken = ct,
                 MaxDegreeOfParallelism = 4
-            },  async (photo, ct) =>
-            {
-                photoInfo.Add(await ProcessPhoto(tempImgFolder, photo, ct));
-            });
-            
+            }, async (photo, ct) => photoInfo.Add(await ProcessPhoto(tempImgFolder, photo, ct)));
+
 
             StorageFile kmlFile = await tempFolder.CreateFileAsync("document.kml");
 
@@ -193,8 +184,8 @@ public partial class MainViewModel : ObservableRecipient
             Stream photoStream = await photo.OpenStreamForReadAsync();
 
 
-            var resTuple = await Image.LoadWithFormatAsync(photoStream, ct);
-            using var image = resTuple.Image;
+            (Image Image, IImageFormat Format) resTuple = await Image.LoadWithFormatAsync(photoStream, ct);
+            using Image? image = resTuple.Image;
             IExifValue<ushort>? orientation = image.Metadata.ExifProfile?.GetValue(ExifTag.Orientation);
             IExifValue<Rational[]>? latitudeRat = image.Metadata.ExifProfile?.GetValue(ExifTag.GPSLatitude);
             IExifValue<string>? latitudeRef = image.Metadata.ExifProfile?.GetValue(ExifTag.GPSLatitudeRef);
@@ -228,11 +219,11 @@ public partial class MainViewModel : ObservableRecipient
                      _ => RotateMode.None,
                  })); ;
 
-            var outPhoto = await tempImgFolder.CreateFileAsync(photo.Name, CreationCollisionOption.GenerateUniqueName);
-            using var outStream = await outPhoto.OpenStreamForWriteAsync();
-            await image.SaveAsync(outStream, resTuple.Format);
-            
-            return new KmzPhotoInfo(photo.Name, photo.Path, longitude ?? 0, latitude ?? 0, bearing?.Value.ToDouble() ?? 0, 
+            StorageFile? outPhoto = await tempImgFolder.CreateFileAsync(photo.Name, CreationCollisionOption.GenerateUniqueName);
+            using Stream? outStream = await outPhoto.OpenStreamForWriteAsync();
+            await image.SaveAsync(outStream, resTuple.Format, cancellationToken: ct);
+
+            return new KmzPhotoInfo(photo.Name, photo.Path, longitude ?? 0, latitude ?? 0, bearing?.Value.ToDouble() ?? 0,
                 new Dictionary<string, string>
                 {
                     { "Date Taken", dateTaken.ToString() ?? "Unknown"},
@@ -255,7 +246,7 @@ public partial class MainViewModel : ObservableRecipient
     {
         if (SelectedPhoto != null)
         {
-            PhotoList.Remove(SelectedPhoto);
+            _ = PhotoList.Remove(SelectedPhoto);
         }
     }
 }

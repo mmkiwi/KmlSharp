@@ -1,11 +1,8 @@
-﻿using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+﻿// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 using Windows.Storage;
 
@@ -17,57 +14,61 @@ public interface IIconInfo
 }
 public sealed class ImageIconInfo : IIconInfo
 {
-    private StorageFile? file;
+    private StorageFile? _file;
 
     public ImageIconInfo() { }
-    public ImageIconInfo(StorageFile file) => File = file;
+    public ImageIconInfo(StorageFile file)
+    {
+        File = file;
+    }
 
-    BitmapImage? _image;
-    public BitmapImage? Image => _image;
+    public BitmapImage? Image { get; private set; }
     public StorageFile? File
     {
-        get => file;
+        get => _file;
         set
         {
-            file = value;
-            var streamTask = value?.OpenAsync(FileAccessMode.Read);
-            var stream = streamTask?.GetResults();
-            
+            _file = value;
+            Windows.Foundation.IAsyncOperation<Windows.Storage.Streams.IRandomAccessStream>? streamTask = value?.OpenAsync(FileAccessMode.Read);
+            Windows.Storage.Streams.IRandomAccessStream? stream = streamTask?.GetResults();
+
             try
             {
                 if (stream != null)
                 {
-                    _image = new BitmapImage();
-                    _image.SetSource(stream);
+                    Image = new BitmapImage();
+                    Image.SetSource(stream);
                 }
             }
             finally
             {
                 stream?.Dispose();
             }
-
         }
     }
 }
 
 public sealed class UriIconInfo : IIconInfo
 {
-    private Uri? uri;
+    private Uri? _uri;
 
     public UriIconInfo()
     {
 
     }
 
-    public UriIconInfo(Uri uri) => Uri = uri;
+    public UriIconInfo(Uri uri)
+    {
+        Uri = uri;
+    }
 
     public Uri? Uri
     {
-        get => uri;
+        get => _uri;
         set
         {
-            uri = value;
-            Image = new BitmapImage(uri);
+            _uri = value;
+            Image = new BitmapImage(_uri);
         }
     }
 

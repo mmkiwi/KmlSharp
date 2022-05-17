@@ -1,4 +1,8 @@
-﻿using MMKiwi.KMZipper.KmlFormat.Atom;
+﻿// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+using MMKiwi.KMZipper.KmlFormat.Atom;
 
 namespace MMKiwi.KMZipper.KmlFormat.Tests;
 public class AtomLinkTests
@@ -8,7 +12,7 @@ public class AtomLinkTests
     {
         AtomLink link = new(new("http://google.com"));
         XDocument xDoc = await link.ToXDocument();
-        xDoc.Should().BeEquivalentTo(new XDocument(
+        _ = xDoc.Should().BeEquivalentTo(new XDocument(
             new XElement(XName.Get("link", Namespaces.Atom),
                 new XAttribute(XName.Get("href", Namespaces.Atom), new Uri("http://google.com").ToString())
             )
@@ -27,7 +31,7 @@ public class AtomLinkTests
             Type = "unknown"
         };
         XDocument xDoc = await link.ToXDocument();
-        xDoc.Should().BeEquivalentTo(new XDocument(
+        _ = xDoc.Should().BeEquivalentTo(new XDocument(
             new XElement(XName.Get("link", Namespaces.Atom),
                 new XAttribute(XName.Get("hreflang", Namespaces.Atom), "en-us"),
                 new XAttribute(XName.Get("length", Namespaces.Atom), "4000"),
@@ -45,7 +49,7 @@ public class AtomLinkTests
         const string xml = $"""
             <link xmlns="{Namespaces.Atom}" />
             """;
-        xml.Awaiting(x => x.Deserialize<AtomLink>()).Should().ThrowAsync<InvalidDataException>();
+        _ = xml.Awaiting(x => x.Deserialize<AtomLink>()).Should().ThrowAsync<InvalidDataException>();
     }
 
     [Fact]
@@ -56,7 +60,7 @@ public class AtomLinkTests
             """;
         AtomLink author = new(new Uri("https://example.com"));
         AtomLink? compObject = await xml.Deserialize<AtomLink>();
-        compObject.Should().BeEquivalentTo(author);
+        _ = compObject.Should().BeEquivalentTo(author);
     }
 
     [Fact]
@@ -81,6 +85,6 @@ public class AtomLinkTests
             Type = "unknown"
         };
         AtomLink? compObject = await xml.Deserialize<AtomLink>();
-        compObject.Should().BeEquivalentTo(author);
+        _ = compObject.Should().BeEquivalentTo(author);
     }
 }

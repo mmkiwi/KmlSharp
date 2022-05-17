@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 using MMKiwi.KMZipper.KmlFormat.Atom;
 
@@ -45,9 +47,9 @@ internal class AtomAuthorSerializer : SerializationHelper<AtomAuthor>
         return o;
     }
 
-    public static async Task StaticWriteTagAsync(XmlWriter writer, AtomAuthor obj, XmlNamespaceManager? ns = null)
+    public static async Task StaticWriteTagAsync(XmlWriter writer, AtomAuthor obj, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
     {
-        var prefix = ns?.LookupPrefix(Namespaces.Atom) ?? "";
+        string? prefix = ns?.LookupPrefix(Namespaces.Atom) ?? "";
         if (obj == null)
             return;
 
@@ -60,7 +62,13 @@ internal class AtomAuthorSerializer : SerializationHelper<AtomAuthor>
         await writer.WriteEndElementAsync();
     }
 
-    public override Task<AtomAuthor> ReadTagAsync(XmlReader reader) => StaticReadTagAsync(reader);
+    public override Task<AtomAuthor> ReadTagAsync(XmlReader reader)
+    {
+        return StaticReadTagAsync(reader);
+    }
 
-    public override Task WriteTagAsync(XmlWriter writer, AtomAuthor o, XmlNamespaceManager? ns = null) => StaticWriteTagAsync(writer, o, ns);
+    public override Task WriteTagAsync(XmlWriter writer, AtomAuthor o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
+    {
+        return StaticWriteTagAsync(writer, o, ns, options);
+    }
 }

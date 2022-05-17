@@ -1,4 +1,8 @@
-﻿namespace MMKiwi.KMZipper.KmlFormat.Serialization;
+﻿// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+namespace MMKiwi.KMZipper.KmlFormat.Serialization;
 
 internal abstract class SerializationHelper<T> : ISerializationHelper<T> where T : class
 {
@@ -16,34 +20,39 @@ internal abstract class SerializationHelper<T> : ISerializationHelper<T> where T
         return o;
     }
     public abstract Task<T> ReadTagAsync(XmlReader reader);
-    public virtual async Task WriteRootTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null)
+    public virtual async Task WriteRootTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
     {
-        var prefix = ns?.LookupPrefix(Namespaces.Atom) ?? "";
+        string? prefix = ns?.LookupPrefix(Namespaces.Atom) ?? "";
         writer.WriteStartDocument();
         if (o == null)
             await Helpers.WriteEmptyElementAsync(writer, prefix, Tag, Namespaces.Atom);
         else
-            await WriteTagAsync(writer, o, ns);
+            await WriteTagAsync(writer, o, ns, options);
     }
-    public abstract Task WriteTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null);
+    public abstract Task WriteTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null);
 }
 
 internal static class Helpers
 {
     public static bool CheckElementName(XmlReader reader, string name, string ns, HashSet<string> alreadySet)
-    => !alreadySet.Contains(name) && reader.LocalName == name && reader.NamespaceURI == ns;
+    {
+        return !alreadySet.Contains(name) && reader.LocalName == name && reader.NamespaceURI == ns;
+    }
+
     public static bool CheckAttributeName(XmlReader reader, string name, string ns, HashSet<string> alreadySet)
-        => !alreadySet.Contains(name) && reader.LocalName == name && (reader.NamespaceURI == ns || string.IsNullOrEmpty(reader.NamespaceURI));
+    {
+        return !alreadySet.Contains(name) && reader.LocalName == name && (reader.NamespaceURI == ns || string.IsNullOrEmpty(reader.NamespaceURI));
+    }
 
     public static async Task<string> ReadElementStringAsync(XmlReader reader, HashSet<string> alreadySet)
     {
-        alreadySet.Add(reader.Name);
+        _ = alreadySet.Add(reader.Name);
         return await reader.ReadElementContentAsStringAsync();
     }
 
     public static async Task<string> ReadAttributeString(XmlReader reader, HashSet<string> alreadySet)
     {
-        alreadySet.Add(reader.Name);
+        _ = alreadySet.Add(reader.Name);
         return await reader.GetValueAsync();
     }
 
@@ -53,5 +62,8 @@ internal static class Helpers
         await writer.WriteEndElementAsync();
     }
 
-    internal static DateTime? ToDateTime(string d) => XmlConvert.ToDateTime(d, XmlDateTimeSerializationMode.Utc);
+    internal static DateTime? ToDateTime(string d)
+    {
+        return XmlConvert.ToDateTime(d, XmlDateTimeSerializationMode.Utc);
+    }
 }
