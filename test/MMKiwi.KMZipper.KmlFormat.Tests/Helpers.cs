@@ -17,7 +17,6 @@ internal static class Helpers
             Async = true,
         });
         return await KmlSerializer.DeserializeAsync<T>(reader);
-
     }
 
     public static async Task<XDocument> ToXDocument<T>(this T input)

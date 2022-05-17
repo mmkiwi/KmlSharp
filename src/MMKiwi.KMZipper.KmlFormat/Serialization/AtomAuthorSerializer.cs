@@ -5,10 +5,14 @@ using MMKiwi.KMZipper.KmlFormat.Atom;
 namespace MMKiwi.KMZipper.KmlFormat.Serialization;
 
 internal class AtomAuthorSerializer : SerializationHelper<AtomAuthor>
+#if NET7_0_OR_GREATER
+    , ISerializationHelperStatic<AtomAuthor>
+#endif
 {
-    protected override string Tag => "author";
+    protected override string Tag => StaticTag;
+    public static string StaticTag => "author";
 
-    public override async Task<AtomAuthor> ReadTagAsync(XmlReader reader)
+    public static async Task<AtomAuthor> StaticReadTagAsync(XmlReader reader)
     {
         _ = reader.MoveToElement();
         if (reader.IsEmptyElement)
@@ -23,14 +27,14 @@ internal class AtomAuthorSerializer : SerializationHelper<AtomAuthor>
             {
                 do
                 {
-                    if (this.CheckElementName(reader, "name", Namespaces.Atom, alreadyLoaded))
-                        o.Name = await this.ReadElementStrignAsync(reader, alreadyLoaded);
+                    if (Helpers.CheckElementName(reader, "name", Namespaces.Atom, alreadyLoaded))
+                        o.Name = await Helpers.ReadElementStringAsync(reader, alreadyLoaded);
 
-                    else if (this.CheckElementName(reader, "email", Namespaces.Atom, alreadyLoaded))
-                        o.Email = await this.ReadElementStrignAsync(reader, alreadyLoaded);
+                    else if (Helpers.CheckElementName(reader, "email", Namespaces.Atom, alreadyLoaded))
+                        o.Email = await Helpers.ReadElementStringAsync(reader, alreadyLoaded);
 
-                    else if (this.CheckElementName(reader, "uri", Namespaces.Atom, alreadyLoaded))
-                        o.Uri = new(await this.ReadElementStrignAsync(reader, alreadyLoaded));
+                    else if (Helpers.CheckElementName(reader, "uri", Namespaces.Atom, alreadyLoaded))
+                        o.Uri = new(await Helpers.ReadElementStringAsync(reader, alreadyLoaded));
 
                 } while (false);
             }
@@ -41,13 +45,13 @@ internal class AtomAuthorSerializer : SerializationHelper<AtomAuthor>
         return o;
     }
 
-    public override async Task WriteTagAsync(XmlWriter writer, AtomAuthor obj, XmlNamespaceManager? ns = null)
+    public static async Task StaticWriteTagAsync(XmlWriter writer, AtomAuthor obj, XmlNamespaceManager? ns = null)
     {
         var prefix = ns?.LookupPrefix(Namespaces.Atom) ?? "";
         if (obj == null)
             return;
 
-        await writer.WriteStartElementAsync(prefix, Tag, Namespaces.Atom);
+        await writer.WriteStartElementAsync(prefix, StaticTag, Namespaces.Atom);
         await writer.WriteElementStringAsync(prefix, "name", Namespaces.Atom, obj.Name);
         if (obj.Email != null)
             await writer.WriteElementStringAsync(prefix, "email", Namespaces.Atom, obj.Email);
@@ -55,4 +59,8 @@ internal class AtomAuthorSerializer : SerializationHelper<AtomAuthor>
             await writer.WriteElementStringAsync(prefix, "uri", Namespaces.Atom, obj.Uri.ToString());
         await writer.WriteEndElementAsync();
     }
+
+    public override Task<AtomAuthor> ReadTagAsync(XmlReader reader) => StaticReadTagAsync(reader);
+
+    public override Task WriteTagAsync(XmlWriter writer, AtomAuthor o, XmlNamespaceManager? ns = null) => StaticWriteTagAsync(writer, o, ns);
 }
