@@ -2,20 +2,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-/* Unmerged change from project 'MMKiwi.KMZipper.KmlFormat (netstandard2.1)'
-Before:
-using System;
-After:
-// System;
-*/
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at https://mozilla.org/MPL/2.0/.
-
-using This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at https://mozilla.org/MPL/2.0/.
-
 using MMKiwi.KMZipper.KmlFormat.Kml;
 
 namespace MMKiwi.KMZipper.KmlFormat.Serialization;
@@ -39,40 +25,40 @@ internal class KmlNetworkLinkControlSerializer : SerializationHelper<KmlNetworkL
         HashSet<string> alreadyLoadedAtt = new();
         while (reader.MoveToNextAttribute())
         {
-            _ = await KmlObjectSerializer.ReadAbstractAttributesAsync(reader, o, alreadyLoadedAtt);
+            _ = await KmlObjectSerializer.ReadAbstractAttributesAsync(reader, o, alreadyLoadedAtt).ConfigureAwait(false);
         }
 
         HashSet<string> alreadyLoaded = new();
         reader.ReadStartElement();
-        while (await reader.MoveToContentAsync() is not XmlNodeType.EndElement and not XmlNodeType.None)
+        while (await reader.MoveToContentAsync().ConfigureAwait(false) is not XmlNodeType.EndElement and not XmlNodeType.None)
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
                 do
                 {
                     if (Helpers.CheckElementName(reader, "minRefreshPeriod", Namespaces.Kml, alreadyLoaded))
-                        o.MinRefreshPeriod = double.Parse(await Helpers.ReadElementStringAsync(reader, alreadyLoaded));
+                        o.MinRefreshPeriod = double.Parse(await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
 
                     else if (Helpers.CheckElementName(reader, "maxSessionlength", Namespaces.Kml, alreadyLoaded))
-                        o.MaxSessionLength = double.Parse(await Helpers.ReadElementStringAsync(reader, alreadyLoaded));
+                        o.MaxSessionLength = double.Parse(await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
 
                     else if (Helpers.CheckElementName(reader, "cookie", Namespaces.Kml, alreadyLoaded))
-                        o.Cookie = await Helpers.ReadElementStringAsync(reader, alreadyLoaded);
+                        o.Cookie = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
                     else if (Helpers.CheckElementName(reader, "message", Namespaces.Kml, alreadyLoaded))
-                        o.Message = await Helpers.ReadElementStringAsync(reader, alreadyLoaded);
+                        o.Message = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
                     else if (Helpers.CheckElementName(reader, "linkName", Namespaces.Kml, alreadyLoaded))
-                        o.LinkName = await Helpers.ReadElementStringAsync(reader, alreadyLoaded);
+                        o.LinkName = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
                     else if (Helpers.CheckElementName(reader, "linkDescription", Namespaces.Kml, alreadyLoaded))
-                        o.LinkDescription = await Helpers.ReadElementStringAsync(reader, alreadyLoaded);
+                        o.LinkDescription = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
                     else if (Helpers.CheckElementName(reader, "linkSnipper", Namespaces.Kml, alreadyLoaded))
-                        o.LinkSnippet = await Helpers.ReadElementStringAsync(reader, alreadyLoaded);
+                        o.LinkSnippet = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
                     else if (Helpers.CheckElementName(reader, "expires", Namespaces.Kml, alreadyLoaded))
-                        o.Expires = Helpers.ToDateTime(await Helpers.ReadElementStringAsync(reader, alreadyLoaded));
+                        o.Expires = Helpers.ToDateTime(await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
 
                     else if (Helpers.CheckElementName(reader, "email", Namespaces.Kml, alreadyLoaded))
                     {

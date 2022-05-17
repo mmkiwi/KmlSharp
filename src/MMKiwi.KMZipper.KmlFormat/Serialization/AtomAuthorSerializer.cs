@@ -23,20 +23,20 @@ internal class AtomAuthorSerializer : SerializationHelper<AtomAuthor>
         AtomAuthor o = new();
         HashSet<string> alreadyLoaded = new();
         reader.ReadStartElement();
-        while (await reader.MoveToContentAsync() is not XmlNodeType.EndElement and not XmlNodeType.None)
+        while (await reader.MoveToContentAsync().ConfigureAwait(false) is not XmlNodeType.EndElement and not XmlNodeType.None)
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
                 do
                 {
                     if (Helpers.CheckElementName(reader, "name", Namespaces.Atom, alreadyLoaded))
-                        o.Name = await Helpers.ReadElementStringAsync(reader, alreadyLoaded);
+                        o.Name = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
                     else if (Helpers.CheckElementName(reader, "email", Namespaces.Atom, alreadyLoaded))
-                        o.Email = await Helpers.ReadElementStringAsync(reader, alreadyLoaded);
+                        o.Email = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
                     else if (Helpers.CheckElementName(reader, "uri", Namespaces.Atom, alreadyLoaded))
-                        o.Uri = new(await Helpers.ReadElementStringAsync(reader, alreadyLoaded));
+                        o.Uri = new(await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
 
                 } while (false);
             }
@@ -53,13 +53,13 @@ internal class AtomAuthorSerializer : SerializationHelper<AtomAuthor>
         if (obj == null)
             return;
 
-        await writer.WriteStartElementAsync(prefix, StaticTag, Namespaces.Atom);
-        await writer.WriteElementStringAsync(prefix, "name", Namespaces.Atom, obj.Name);
+        await writer.WriteStartElementAsync(prefix, StaticTag, Namespaces.Atom).ConfigureAwait(false);
+        await writer.WriteElementStringAsync(prefix, "name", Namespaces.Atom, obj.Name).ConfigureAwait(false);
         if (obj.Email != null)
-            await writer.WriteElementStringAsync(prefix, "email", Namespaces.Atom, obj.Email);
+            await writer.WriteElementStringAsync(prefix, "email", Namespaces.Atom, obj.Email).ConfigureAwait(false);
         if (obj.Uri != null)
-            await writer.WriteElementStringAsync(prefix, "uri", Namespaces.Atom, obj.Uri.ToString());
-        await writer.WriteEndElementAsync();
+            await writer.WriteElementStringAsync(prefix, "uri", Namespaces.Atom, obj.Uri.ToString()).ConfigureAwait(false);
+        await writer.WriteEndElementAsync().ConfigureAwait(false);
     }
 
     public override Task<AtomAuthor> ReadTagAsync(XmlReader reader)

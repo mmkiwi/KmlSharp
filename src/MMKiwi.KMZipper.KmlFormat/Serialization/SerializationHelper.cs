@@ -14,7 +14,7 @@ internal abstract class SerializationHelper<T> : ISerializationHelper<T> where T
         if (reader.MoveToContent() == System.Xml.XmlNodeType.Element)
         {
             o = reader.LocalName == Tag && reader.NamespaceURI == Namespaces.Atom
-                ? await ReadTagAsync(reader)
+                ? await ReadTagAsync(reader).ConfigureAwait(false)
                 : throw new ArgumentException($"Tag {reader.LocalName} was not expected");
         }
         return o;
@@ -25,9 +25,9 @@ internal abstract class SerializationHelper<T> : ISerializationHelper<T> where T
         string? prefix = ns?.LookupPrefix(Namespaces.Atom) ?? "";
         writer.WriteStartDocument();
         if (o == null)
-            await Helpers.WriteEmptyElementAsync(writer, prefix, Tag, Namespaces.Atom);
+            await Helpers.WriteEmptyElementAsync(writer, prefix, Tag, Namespaces.Atom).ConfigureAwait(false);
         else
-            await WriteTagAsync(writer, o, ns, options);
+            await WriteTagAsync(writer, o, ns, options).ConfigureAwait(false);
     }
     public abstract Task WriteTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null);
 }
@@ -47,19 +47,19 @@ internal static class Helpers
     public static async Task<string> ReadElementStringAsync(XmlReader reader, HashSet<string> alreadySet)
     {
         _ = alreadySet.Add(reader.Name);
-        return await reader.ReadElementContentAsStringAsync();
+        return await reader.ReadElementContentAsStringAsync().ConfigureAwait(false);
     }
 
     public static async Task<string> ReadAttributeString(XmlReader reader, HashSet<string> alreadySet)
     {
         _ = alreadySet.Add(reader.Name);
-        return await reader.GetValueAsync();
+        return await reader.GetValueAsync().ConfigureAwait(false);
     }
 
     public static async Task WriteEmptyElementAsync(XmlWriter writer, string prefix, string localname, string ns)
     {
-        await writer.WriteStartElementAsync(prefix, localname, ns);
-        await writer.WriteEndElementAsync();
+        await writer.WriteStartElementAsync(prefix, localname, ns).ConfigureAwait(false);
+        await writer.WriteEndElementAsync().ConfigureAwait(false);
     }
 
     internal static DateTime? ToDateTime(string d)
