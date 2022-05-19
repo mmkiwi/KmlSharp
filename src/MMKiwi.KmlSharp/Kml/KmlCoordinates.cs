@@ -2,8 +2,22 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+using static System.FormattableString; 
 namespace MMKiwi.KmlSharp.Kml;
 
-public class KmlCoordinates
+public record class KmlCoordinates
 {
+    public double X { get; set; }
+    public double Y { get; set; }
+    public double? Z { get; set; }
+
+    public override string ToString()
+        => Invariant($"{X},{Y}{(Z.HasValue ? "," : "")}{Z}");
+}
+
+
+public static class KmlCoordinatesExtensions
+{
+    public static string ToCoordString(this IEnumerable<KmlCoordinates> coordinates)
+        => string.Join("\r\n", coordinates.Select(c=>c.ToString()));
 }
