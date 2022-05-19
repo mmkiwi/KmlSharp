@@ -4,6 +4,9 @@
 
 namespace MMKiwi.KMZipper.KmlFormat.Kml;
 
-public abstract class KmlAbstractGeometry
+public class KmlFlyTo : KmlAbstractTourPrimitive
 {
+    public double Duration { get; set; } = 0;
+    public KmlFlyToMode FlyToMode { get; set; } = KmlFlyToMode.Bounce;
+    public KmlAbstractView? View { get; set; }
 }

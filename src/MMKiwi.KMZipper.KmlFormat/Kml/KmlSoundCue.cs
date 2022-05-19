@@ -4,6 +4,8 @@
 
 namespace MMKiwi.KMZipper.KmlFormat.Kml;
 
-public abstract class KmlAbstractGeometry
+public class KmlSoundCue : KmlAbstractTourPrimitive
 {
+    public string? Href{ get; set; }
+    public double DelayedStart { get; set; } = 0;
 }

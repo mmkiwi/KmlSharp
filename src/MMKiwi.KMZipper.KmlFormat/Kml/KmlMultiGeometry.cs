@@ -4,6 +4,7 @@
 
 namespace MMKiwi.KMZipper.KmlFormat.Kml;
 
-public abstract class KmlAbstractGeometry
+public class KmlMultiGeometry : KmlAbstractGeometry
 {
+    public List<KmlAbstractGeometry> Geometry { get; } = new();
 }

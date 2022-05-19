@@ -4,6 +4,10 @@
 
 namespace MMKiwi.KMZipper.KmlFormat.Kml;
 
-public abstract class KmlAbstractGeometry
+public class KmlAnimatedUpdated : KmlAbstractTourPrimitive
 {
+    public double Duration { get; set; } = 0;
+    public KmlUpdate? Update { get; set; }
+    public double DelayedStart { get; set; } = 0;
+
 }

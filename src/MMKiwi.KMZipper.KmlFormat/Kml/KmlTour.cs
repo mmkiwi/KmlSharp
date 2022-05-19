@@ -3,7 +3,9 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 namespace MMKiwi.KMZipper.KmlFormat.Kml;
-
-public abstract class KmlAbstractGeometry
+public class KmlTour: KmlAbstractObject
 {
+    public string? Name { get; set; }
+    public bool Visibility { get; set; }
+    public bool BaloonVisibility { get; set; }
 }

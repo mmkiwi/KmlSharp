@@ -4,6 +4,7 @@
 
 namespace MMKiwi.KMZipper.KmlFormat.Kml;
 
-public abstract class KmlAbstractGeometry
+public class KmlPlaylist:KmlAbstractObject
 {
+    public List<KmlAbstractTourPrimitive> TourItems { get; } = new();
 }

@@ -4,6 +4,4 @@
 
 namespace MMKiwi.KMZipper.KmlFormat.Kml;
 
-public abstract class KmlAbstractGeometry
-{
-}
+public enum KmlFlyToMode { Smooth, Bounce }

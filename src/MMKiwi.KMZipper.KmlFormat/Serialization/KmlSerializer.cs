@@ -28,7 +28,7 @@ public static partial class KmlSerializer
         if (serializationHelper == null)
             throw new ArgumentException($"Could not find serializer for {typeof(T)}", nameof(obj));
 
-        await serializationHelper.WriteRootTagAsync(writer, obj, ns);
+        await serializationHelper.WriteRootTagAsync(writer, obj, ns).ConfigureAwait(false);
         writer.Flush();
     }
 
@@ -36,7 +36,7 @@ public static partial class KmlSerializer
     {
         ISerializationHelper<T>? serializationHelper = GetSerializer<T>();
         return serializationHelper != null
-            ? await serializationHelper.ReadRootTagAsync(reader)
+            ? await serializationHelper.ReadRootTagAsync(reader).ConfigureAwait(false)
             : throw new ArgumentException($"Could not find serializer for {typeof(T)}", nameof(T));
     }
 

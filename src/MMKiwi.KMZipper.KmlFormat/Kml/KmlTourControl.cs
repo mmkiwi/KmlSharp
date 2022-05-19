@@ -4,6 +4,7 @@
 
 namespace MMKiwi.KMZipper.KmlFormat.Kml;
 
-public abstract class KmlAbstractGeometry
+public class KmlTourControl : KmlAbstractTourPrimitive
 {
+    public KmlPlayMode? PlayMode { get; set; }
 }

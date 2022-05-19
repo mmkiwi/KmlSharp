@@ -23,6 +23,7 @@ internal interface ISerializationHelperStatic<T>
 public record class KmlWriteOptions
 {
     public bool EmitAttributeNamespaces { get; init; } = false;
+    public bool EmitValuesWhenDefault { get; set; } = false;
 
     public static KmlWriteOptions Default => new();
 }
