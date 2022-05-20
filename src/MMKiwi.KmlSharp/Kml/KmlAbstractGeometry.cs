@@ -4,6 +4,6 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public abstract class KmlAbstractGeometry
+public abstract class KmlAbstractGeometry: KmlAbstractObject
 {
 }

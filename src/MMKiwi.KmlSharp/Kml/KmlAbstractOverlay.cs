@@ -2,10 +2,14 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+using System.Drawing;
+
 namespace MMKiwi.KmlSharp.Kml;
 
-public class KmlAlias : KmlAbstractObject
+public abstract class KmlAbstractOverlay : KmlAbstractFeature
 {
-    public string? TargetHref { get; set; }
-    public string? SourceHref { get; set; }
+    public Color Color { get; set; } = Color.White;
+    public int DrawOrder { get; set; } = 0;
+
+    public KmlIcon? Icon {get;set;}
 }

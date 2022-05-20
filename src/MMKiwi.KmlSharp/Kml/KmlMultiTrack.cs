@@ -4,12 +4,12 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public class KmlPolygon : KmlAbstractGeometry
+public class KmlMultiTrack : KmlAbstractGeometry
 {
-    public bool Extrude { get; set; } = false;
-    public bool Tessellate { get; set; } = false;
     public KmlAltitudeMode AltitudeMode { get; set; }
     public KmlSeaFloorAltitudeMode SeaFloorAltitudeMode { get; set; }
-    public KmlLinearRing? OuterBoundary { get; set; }
-    public List<KmlLinearRing> InnerBoundaries { get; } = new();
+
+    public bool Interpolate { get; set; } = false;
+
+    public List<KmlTrack> Tracks { get; } = new();
 }

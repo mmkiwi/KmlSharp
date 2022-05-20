@@ -4,8 +4,6 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public class KmlAlias : KmlAbstractObject
+public class KmlIcon
 {
-    public string? TargetHref { get; set; }
-    public string? SourceHref { get; set; }
 }

@@ -5,12 +5,8 @@
 using static System.FormattableString; 
 namespace MMKiwi.KmlSharp.Kml;
 
-public record class KmlCoordinates
+public record class KmlCoordinates(double X , double Y, double? Z)
 {
-    public double X { get; set; }
-    public double Y { get; set; }
-    public double? Z { get; set; }
-
     public override string ToString()
         => Invariant($"{X},{Y}{(Z.HasValue ? "," : "")}{Z}");
 }
