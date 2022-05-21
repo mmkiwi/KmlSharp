@@ -4,7 +4,7 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public class KmlIcon : KmlAbstractObject
+public enum KmlStyleState
 {
-    public string? Href {get;set;}
+    Normal, Highlight
 }

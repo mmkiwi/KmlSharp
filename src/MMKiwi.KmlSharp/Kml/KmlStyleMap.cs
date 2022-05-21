@@ -4,7 +4,7 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public class KmlIcon : KmlAbstractObject
+public class KmlStyleMap : KmlAbstractStyleSelector
 {
-    public string? Href {get;set;}
+    public List<KmlPair> Pairs { get; } = new();
 }

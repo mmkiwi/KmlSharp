@@ -31,7 +31,7 @@ public abstract class KmlAbstractFeature : KmlAbstractObject
 
     public KmlAbstractTime? TimePrimitive { get; set; }
 
-    public Uri? StyleUrl { get; set; }
+    public string? StyleUrl { get; set; }
 
     public List<KmlAbstractStyleSelector>? StyleSelector { get; set; }
 

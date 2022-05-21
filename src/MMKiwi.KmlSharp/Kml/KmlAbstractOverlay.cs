@@ -12,14 +12,3 @@ public abstract class KmlAbstractOverlay : KmlAbstractFeature
     public int DrawOrder { get; set; } = 0;
     public KmlIcon? Icon { get; set; }
 }
-
-public class KmlScreenOverlay : KmlAbstractOverlay
-{
-    public KmlVect2? OverlayXY { get; set; }
-    public KmlVect2? ScreenXY { get; set; }
-    public KmlVect2? RotationXY { get; set; }
-    public KmlVect2? Size { get; set; }
-    public double Rotation { get; set; } = 0;
-}
-
-public record class KmlVect2(double X = 1, double Y = 1) { }

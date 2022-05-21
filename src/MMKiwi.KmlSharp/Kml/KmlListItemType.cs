@@ -4,7 +4,7 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public class KmlIcon : KmlAbstractObject
+public enum KmlListItemType
 {
-    public string? Href {get;set;}
+    RadioFolder, Check, CheckHideChildren, CheckOffOnly
 }

@@ -4,7 +4,4 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public class KmlIcon : KmlAbstractObject
-{
-    public string? Href {get;set;}
-}
+public record class KmlVect2(double X = 1, double Y = 1) { }

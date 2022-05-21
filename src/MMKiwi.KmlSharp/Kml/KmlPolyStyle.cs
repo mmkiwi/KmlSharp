@@ -4,7 +4,8 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public class KmlIcon : KmlAbstractObject
+public class KmlPolyStyle : KmlAbstractColorStyle
 {
-    public string? Href {get;set;}
+    public bool Fill { get; set; } = true;
+    public bool Outline { get; set; } = true;
 }

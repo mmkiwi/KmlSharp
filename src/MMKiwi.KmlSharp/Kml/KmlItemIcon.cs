@@ -4,7 +4,8 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public class KmlIcon : KmlAbstractObject
+public class KmlItemIcon : KmlAbstractObject
 {
-    public string? Href {get;set;}
+    public KmlState State { get; set; } = default;
+    public string? Href { get; set; }
 }

@@ -4,7 +4,4 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public class KmlIcon : KmlAbstractObject
-{
-    public string? Href {get;set;}
-}
+public record struct KmlState(bool Open, bool Closed, bool Error, bool Fetching0, bool Fetching1, bool Fetching2) { }

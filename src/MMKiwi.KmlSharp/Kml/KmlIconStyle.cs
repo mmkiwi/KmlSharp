@@ -4,7 +4,10 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public class KmlIcon : KmlAbstractObject
+public class KmlIconStyle : KmlAbstractColorStyle
 {
-    public string? Href {get;set;}
+    public double Scale { get; set; } = 1;
+    public double Heading { get; set; } = 0;
+    public KmlIcon? Icon { get; set; }
+    public KmlVect2? HotSpot { get; set; }
 }

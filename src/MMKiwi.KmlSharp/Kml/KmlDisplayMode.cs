@@ -4,7 +4,4 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public class KmlIcon : KmlAbstractObject
-{
-    public string? Href {get;set;}
-}
+public enum KmlDisplayMode { Default, Hide }
