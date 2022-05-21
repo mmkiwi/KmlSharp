@@ -4,4 +4,6 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public class KmlLatLonQuad : KmlAbstractExtent { }
+public class KmlLatLonQuad :KmlAbstractExtent {
+    public KmlCoordinates[] Coordinates {get;} = new KmlCoordinates[4];
+}
