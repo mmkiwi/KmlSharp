@@ -6,7 +6,7 @@ using System.Globalization;
 
 using MMKiwi.KmlSharp.Atom;
 
-namespace MMKiwi.KmlSharp.Serialization;
+namespace MMKiwi.KmlSharp.Serialization.Atom;
 
 internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
 #if NET7_0_OR_GREATER
@@ -24,17 +24,17 @@ internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
         while (reader.MoveToNextAttribute())
         {
             if (Helpers.CheckAttributeName(reader, "href", Namespaces.Atom, alreadyLoaded))
-                o.Href = new(await Helpers.ReadAttributeString(reader, alreadyLoaded));
+                o.Href = new(await Helpers.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false));
             else if (Helpers.CheckAttributeName(reader, "rel", Namespaces.Atom, alreadyLoaded))
-                o.Rel = await Helpers.ReadAttributeString(reader, alreadyLoaded);
+                o.Rel = await Helpers.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false);
             else if (Helpers.CheckAttributeName(reader, "type", Namespaces.Atom, alreadyLoaded))
-                o.Type = await Helpers.ReadAttributeString(reader, alreadyLoaded);
+                o.Type = await Helpers.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false);
             else if (Helpers.CheckAttributeName(reader, "hreflang", Namespaces.Atom, alreadyLoaded))
-                o.HrefLang = await Helpers.ReadAttributeString(reader, alreadyLoaded);
+                o.HrefLang = await Helpers.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false);
             else if (Helpers.CheckAttributeName(reader, "title", Namespaces.Atom, alreadyLoaded))
-                o.Title = await Helpers.ReadAttributeString(reader, alreadyLoaded);
+                o.Title = await Helpers.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false);
             else if (Helpers.CheckAttributeName(reader, "length", Namespaces.Atom, alreadyLoaded))
-                o.Length = int.Parse(await Helpers.ReadAttributeString(reader, alreadyLoaded));
+                o.Length = int.Parse(await Helpers.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false));
         }
         reader.ReadStartElement();
         // ensure Href was writting
@@ -55,19 +55,19 @@ internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
         if (obj == null)
             return;
 
-        await writer.WriteStartElementAsync(prefix, StaticTag, Namespaces.Atom);
-        await writer.WriteAttributeStringAsync(prefix, "href", Namespaces.Atom, obj.Href?.ToString() ?? "");
+        await writer.WriteStartElementAsync(prefix, StaticTag, Namespaces.Atom).ConfigureAwait(false);
+        await writer.WriteAttributeStringAsync(prefix, "href", Namespaces.Atom, obj.Href?.ToString() ?? "").ConfigureAwait(false);
         if (obj.Rel != null)
-            await writer.WriteAttributeStringAsync(prefix, "rel", Namespaces.Atom, obj.Rel);
+            await writer.WriteAttributeStringAsync(prefix, "rel", Namespaces.Atom, obj.Rel).ConfigureAwait(false);
         if (obj.Type != null)
-            await writer.WriteAttributeStringAsync(prefix, "type", Namespaces.Atom, obj.Type);
+            await writer.WriteAttributeStringAsync(prefix, "type", Namespaces.Atom, obj.Type).ConfigureAwait(false);
         if (obj.HrefLang != null)
-            await writer.WriteAttributeStringAsync(prefix, "hreflang", Namespaces.Atom, obj.HrefLang);
+            await writer.WriteAttributeStringAsync(prefix, "hreflang", Namespaces.Atom, obj.HrefLang).ConfigureAwait(false);
         if (obj.Title != null)
-            await writer.WriteAttributeStringAsync(prefix, "title", Namespaces.Atom, obj.Title.ToString());
+            await writer.WriteAttributeStringAsync(prefix, "title", Namespaces.Atom, obj.Title.ToString()).ConfigureAwait(false);
         if (obj.Length.HasValue)
-            await writer.WriteAttributeStringAsync(prefix, "length", Namespaces.Atom, obj.Length.Value.ToString(CultureInfo.InvariantCulture));
-        await writer.WriteEndElementAsync();
+            await writer.WriteAttributeStringAsync(prefix, "length", Namespaces.Atom, obj.Length.Value.ToString(CultureInfo.InvariantCulture)).ConfigureAwait(false);
+        await writer.WriteEndElementAsync().ConfigureAwait(false);
     }
 
     public override Task<AtomLink> ReadTagAsync(XmlReader reader)

@@ -4,7 +4,7 @@
 
 using MMKiwi.KmlSharp.Kml;
 
-namespace MMKiwi.KmlSharp.Serialization;
+namespace MMKiwi.KmlSharp.Serialization.Kml;
 internal class KmlUpdateSerializer : SerializationHelper<KmlNetworkLinkControl>
 #if NET7_0_OR_GREATER
     , ISerializationHelperStatic<KmlNetworkLinkControl>

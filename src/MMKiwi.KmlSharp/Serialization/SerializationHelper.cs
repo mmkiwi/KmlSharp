@@ -1,7 +1,8 @@
 ﻿// This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
-
+using Color = System.Drawing.Color;
+using Humanizer;
 namespace MMKiwi.KmlSharp.Serialization;
 
 internal abstract class SerializationHelper<T> : ISerializationHelper<T> where T : class
@@ -50,6 +51,37 @@ internal static class Helpers
         return await reader.ReadElementContentAsStringAsync().ConfigureAwait(false);
     }
 
+    public static async Task<Color> ReadElementColorAsync(XmlReader reader, HashSet<string> alreadySet)
+    {
+        _ = alreadySet.Add(reader.Name);
+        byte[] result = new byte[4];
+        _ = await reader.ReadElementContentAsBinHexAsync(result, 0, 4).ConfigureAwait(false);
+        return Color.FromArgb(result[0], result[3], result[2], result[1]);
+    }
+
+    public static string ToKmlString(this Color color)
+        => $"{color.A:x}{color.B:x}{color.G:x}{color.R:x}";
+
+
+    public static string ToKmlString<T>(this T enumVal, EnumConvertMode mode = EnumConvertMode.CamelCase)
+        where T : struct, Enum 
+        => mode switch
+        {
+            EnumConvertMode.CamelCase => enumVal.ToString().Camelize(),
+            EnumConvertMode.PascalCase => enumVal.ToString().Pascalize(),
+            EnumConvertMode.LowerCase => enumVal.ToString().ToLowerInvariant(),
+            EnumConvertMode.UpperCase => enumVal.ToString().ToUpperInvariant(),
+            _ => throw new NotImplementedException(),
+        };
+
+    public static async Task<T> ReadElementEnumAsync<T>(XmlReader reader, HashSet<string> alreadySet)
+        where T : struct, Enum
+    {
+        _ = alreadySet.Add(reader.Name);
+        string res = await reader.ReadElementContentAsStringAsync().ConfigureAwait(false);
+        return Enum.Parse<T>(res);
+    }
+
     public static async Task<string> ReadAttributeString(XmlReader reader, HashSet<string> alreadySet)
     {
         _ = alreadySet.Add(reader.Name);
@@ -66,4 +98,9 @@ internal static class Helpers
     {
         return XmlConvert.ToDateTime(d, XmlDateTimeSerializationMode.Utc);
     }
+}
+
+public enum EnumConvertMode
+{
+    CamelCase, PascalCase, LowerCase, UpperCase
 }

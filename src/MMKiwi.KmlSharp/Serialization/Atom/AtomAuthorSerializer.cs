@@ -4,7 +4,7 @@
 
 using MMKiwi.KmlSharp.Atom;
 
-namespace MMKiwi.KmlSharp.Serialization;
+namespace MMKiwi.KmlSharp.Serialization.Atom;
 
 internal class AtomAuthorSerializer : SerializationHelper<AtomAuthor>
 #if NET7_0_OR_GREATER
@@ -27,18 +27,14 @@ internal class AtomAuthorSerializer : SerializationHelper<AtomAuthor>
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
-                do
-                {
-                    if (Helpers.CheckElementName(reader, "name", Namespaces.Atom, alreadyLoaded))
-                        o.Name = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                if (Helpers.CheckElementName(reader, "name", Namespaces.Atom, alreadyLoaded))
+                    o.Name = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
-                    else if (Helpers.CheckElementName(reader, "email", Namespaces.Atom, alreadyLoaded))
-                        o.Email = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                else if (Helpers.CheckElementName(reader, "email", Namespaces.Atom, alreadyLoaded))
+                    o.Email = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
-                    else if (Helpers.CheckElementName(reader, "uri", Namespaces.Atom, alreadyLoaded))
-                        o.Uri = new(await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
-
-                } while (false);
+                else if (Helpers.CheckElementName(reader, "uri", Namespaces.Atom, alreadyLoaded))
+                    o.Uri = new(await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
             }
         }
         if (o.Name == null)

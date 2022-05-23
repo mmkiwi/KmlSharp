@@ -9,5 +9,5 @@ public class KmlListStyle : KmlAbstractColorStyle
     public KmlListItemType ListItemType { get; set; }= KmlListItemType.Check;
     public KmlColorMode? BgColor { get; set; }
     public List<KmlItemIcon> ItemIcons { get; } = new();
-    public int MaxSnippetLines { get; set} = 2;
+    public int MaxSnippetLines { get; set; } = 2;
 }

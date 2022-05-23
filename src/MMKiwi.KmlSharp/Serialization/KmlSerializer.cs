@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-using MMKiwi.KmlSharp.Atom;
+using AtomObj = MMKiwi.KmlSharp.Atom;
 
 namespace MMKiwi.KmlSharp.Serialization;
 public static partial class KmlSerializer
@@ -12,8 +12,8 @@ public static partial class KmlSerializer
     static KmlSerializer()
     {
         Serializers = new();
-        AddSerializer<AtomAuthor, AtomAuthorSerializer>();
-        AddSerializer<AtomLink, AtomLinkSerializer>();
+        AddSerializer<AtomObj.AtomAuthor, Atom.AtomAuthorSerializer>();
+        AddSerializer<AtomObj.AtomLink, Atom.AtomLinkSerializer>();
     }
 
     private static void AddSerializer<TObject, THelper>()

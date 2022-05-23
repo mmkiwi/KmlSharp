@@ -4,7 +4,7 @@
 
 using MMKiwi.KmlSharp.Kml;
 
-namespace MMKiwi.KmlSharp.Serialization;
+namespace MMKiwi.KmlSharp.Serialization.Kml;
 internal class KmlNetworkLinkControlSerializer : SerializationHelper<KmlNetworkLinkControl>
 #if NET7_0_OR_GREATER
     , ISerializationHelperStatic<KmlNetworkLinkControl>
@@ -18,14 +18,14 @@ internal class KmlNetworkLinkControlSerializer : SerializationHelper<KmlNetworkL
     {
         _ = reader.MoveToElement();
         if (reader.IsEmptyElement)
-            throw new InvalidDataException("<atom:author /> requires name element");
+            throw new InvalidDataException("<kml:NetworkLinkControlSerializer /> requires name element");
 
         KmlNetworkLinkControl o = new();
 
         HashSet<string> alreadyLoadedAtt = new();
         while (reader.MoveToNextAttribute())
         {
-            _ = await KmlObjectSerializer.ReadAbstractAttributesAsync(reader, o, alreadyLoadedAtt).ConfigureAwait(false);
+            _ = await Kml.KmlObjectSerializer.ReadAbstractAttributesAsync(reader, o, alreadyLoadedAtt).ConfigureAwait(false);
         }
 
         HashSet<string> alreadyLoaded = new();
@@ -34,8 +34,6 @@ internal class KmlNetworkLinkControlSerializer : SerializationHelper<KmlNetworkL
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
-                do
-                {
                     if (Helpers.CheckElementName(reader, "minRefreshPeriod", Namespaces.Kml, alreadyLoaded))
                         o.MinRefreshPeriod = double.Parse(await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
 
@@ -64,7 +62,6 @@ internal class KmlNetworkLinkControlSerializer : SerializationHelper<KmlNetworkL
                     {
 
                     }
-                } while (false);
             }
         }
         reader.ReadEndElement();
