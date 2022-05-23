@@ -40,7 +40,7 @@ internal class KmlLineStyleSerializer : SerializationHelper<KmlLineStyle>
             if (reader.NodeType == XmlNodeType.Element)
             {
                 if (Helpers.CheckElementName(reader, "width", Namespaces.Kml, alreadyLoaded))
-                    o.Width = await Helpers.ReadElementDoubleAsync(reader, alreadyLoaded);
+                    o.Width = await Helpers.ReadElementDoubleAsync(reader, alreadyLoaded).ConfigureAwait(false);
                 else if (!await KmlAbstractColorSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt).ConfigureAwait(false))
                 {
 #warning todo unknown elements
