@@ -17,6 +17,7 @@ public static partial class KmlSerializer
         AddSerializer<AtomObj.AtomLink, Atom.AtomLinkSerializer>();
         AddSerializer<KmlObj.KmlLineStyle, Kml.KmlLineStyleSerializer>();
         AddSerializer<KmlObj.KmlLabelStyle, Kml.KmlLabelStyleSerializer>();
+        AddSerializer<KmlObj.KmlPolyStyle, Kml.KmlPolyStyleSerializer>();
     }
 
     private static void AddSerializer<TObject, THelper>()

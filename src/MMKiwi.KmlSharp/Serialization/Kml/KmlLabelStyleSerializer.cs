@@ -40,7 +40,7 @@ internal class KmlLabelStyleSerializer : SerializationHelper<KmlLabelStyle>
             if (reader.NodeType == XmlNodeType.Element)
             {
                 if (Helpers.CheckElementName(reader, "scale", Namespaces.Kml, alreadyLoaded))
-                    o.Scale = Helpers.ReadElementDoubleAsync(reader, alreadyLoaded);
+                    o.Scale = await Helpers.ReadElementDoubleAsync(reader, alreadyLoaded);
                 else if (!await KmlAbstractColorSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt).ConfigureAwait(false))
                 {
 #warning todo unknown elements

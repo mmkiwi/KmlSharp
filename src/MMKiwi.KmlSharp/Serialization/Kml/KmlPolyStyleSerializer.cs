@@ -7,21 +7,21 @@ using System.Globalization;
 using MMKiwi.KmlSharp.Kml;
 
 namespace MMKiwi.KmlSharp.Serialization.Kml;
-internal class KmlLineStyleSerializer : SerializationHelper<KmlLineStyle>
+internal class KmlPolyStyleSerializer : SerializationHelper<KmlPolyStyle>
 #if NET7_0_OR_GREATER
-    , ISerializationHelperStatic<KmlLineStyle>
+    , ISerializationHelperStatic<KmlPolyStyle>
 #endif
 {
     protected override string Namespace => StaticNamespace;
     public static string StaticNamespace => Namespaces.Kml;
     protected override string Tag => StaticTag;
-    public static string StaticTag => "LineStyle";
+    public static string StaticTag => "PolyStyle";
 
-    public static async Task<KmlLineStyle> StaticReadTagAsync(XmlReader reader)
+    public static async Task<KmlPolyStyle> StaticReadTagAsync(XmlReader reader)
     {
         _ = reader.MoveToElement();
 
-        KmlLineStyle o = new();
+        KmlPolyStyle o = new();
 
         HashSet<string> alreadyLoadedAtt = new();
         while (reader.MoveToNextAttribute())
@@ -31,28 +31,30 @@ internal class KmlLineStyleSerializer : SerializationHelper<KmlLineStyle>
 
         HashSet<string> alreadyLoaded = new();
         reader.ReadStartElement();
-        
+
         int i = 0;
         while (await reader.MoveToContentAsync().ConfigureAwait(false) is not XmlNodeType.EndElement and not XmlNodeType.None)
         {
-            if(i++ >= 100)
+            if (i++ >= 100)
                 throw new StackOverflowException();
             if (reader.NodeType == XmlNodeType.Element)
             {
-                if (Helpers.CheckElementName(reader, "width", Namespaces.Kml, alreadyLoaded))
-                    o.Width = await Helpers.ReadElementDoubleAsync(reader, alreadyLoaded);
+                if (Helpers.CheckElementName(reader, "fill", Namespaces.Kml, alreadyLoaded))
+                    o.Fill = await Helpers.ReadElementBoolAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                else if (Helpers.CheckElementName(reader, "outline", Namespaces.Kml, alreadyLoaded))
+                    o.Outline = await Helpers.ReadElementBoolAsync(reader, alreadyLoaded).ConfigureAwait(false);
                 else if (!await KmlAbstractColorSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt).ConfigureAwait(false))
                 {
 #warning todo unknown elements
                 }
             }
         }
-        if(reader.NodeType != XmlNodeType.None)
+        if (reader.NodeType != XmlNodeType.None)
             reader.ReadEndElement();
         return o;
     }
 
-    public static async Task StaticWriteTagAsync(XmlWriter writer, KmlLineStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
+    public static async Task StaticWriteTagAsync(XmlWriter writer, KmlPolyStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
     {
         options ??= KmlWriteOptions.Default;
         string? prefix = ns?.LookupPrefix(Namespaces.Kml) ?? "";
@@ -61,15 +63,17 @@ internal class KmlLineStyleSerializer : SerializationHelper<KmlLineStyle>
 
         await writer.WriteStartElementAsync(prefix, StaticTag, Namespaces.Kml).ConfigureAwait(false);
         await KmlAbstractColorSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns).ConfigureAwait(false);
-        if (o.Width != 1 || options.EmitValuesWhenDefault)
-            await writer.WriteElementStringAsync(prefix, "width", Namespaces.Kml, o.Width.ToString(CultureInfo.InvariantCulture)).ConfigureAwait(false);
+        if (o.Fill != true || options.EmitValuesWhenDefault)
+            await writer.WriteElementStringAsync(prefix, "fill", Namespaces.Kml, o.Fill.ToKmlString()).ConfigureAwait(false);
+        if (o.Outline != true || options.EmitValuesWhenDefault)
+            await writer.WriteElementStringAsync(prefix, "outline", Namespaces.Kml, o.Outline.ToKmlString()).ConfigureAwait(false);
         await KmlAbstractColorSerializer.WriteAbstractElementsAsync(writer, o, options, ns).ConfigureAwait(false);
         await writer.WriteEndElementAsync().ConfigureAwait(false);
     }
 
-    public override Task WriteTagAsync(XmlWriter writer, KmlLineStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
+    public override Task WriteTagAsync(XmlWriter writer, KmlPolyStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
         => StaticWriteTagAsync(writer, o, ns, options);
 
-    public override Task<KmlLineStyle> ReadTagAsync(XmlReader reader)
+    public override Task<KmlPolyStyle> ReadTagAsync(XmlReader reader)
         => StaticReadTagAsync(reader);
 }

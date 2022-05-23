@@ -55,10 +55,18 @@ internal static class Helpers
     }
 
 
-    public static double ReadElementDoubleAsync(XmlReader reader, HashSet<string> alreadySet)
+    public static async Task<double> ReadElementDoubleAsync(XmlReader reader, HashSet<string> alreadySet)
     {
         _ = alreadySet.Add(reader.Name);
-        return reader.ReadElementContentAsDouble();
+        string res = await reader.ReadElementContentAsStringAsync().ConfigureAwait(false);
+        return XmlConvert.ToDouble(res);
+    }
+
+    public static async Task<bool> ReadElementBoolAsync(XmlReader reader, HashSet<string> alreadySet)
+    {
+        _ = alreadySet.Add(reader.Name);
+        string res = await reader.ReadElementContentAsStringAsync().ConfigureAwait(false);
+        return XmlConvert.ToBoolean(res);
     }
 
     public static async Task<Color> ReadElementColorAsync(XmlReader reader, HashSet<string> alreadySet)
@@ -89,6 +97,17 @@ internal static class Helpers
             _ => throw new NotImplementedException(),
         };
 
+    public static string ToKmlString(this bool boolVal, BoolConvertMode mode = BoolConvertMode.Text)
+        => (boolVal, mode) switch
+        {
+            (true, BoolConvertMode.Text) => "true",
+            (false, BoolConvertMode.Text) => "false",
+            (true, BoolConvertMode.Numeric) => "1",
+            (false, BoolConvertMode.Numeric) => "0",
+            _ => throw new NotImplementedException(),
+        };
+
+
     public static async Task<T> ReadElementEnumAsync<T>(XmlReader reader, HashSet<string> alreadySet)
         where T : struct, Enum
     {
@@ -118,4 +137,10 @@ internal static class Helpers
 public enum EnumConvertMode
 {
     CamelCase, PascalCase, LowerCase, UpperCase
+}
+
+public enum BoolConvertMode
+{
+    Text,
+    Numeric
 }
