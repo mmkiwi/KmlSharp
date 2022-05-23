@@ -9,6 +9,9 @@
     <LangVersion>preview</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
     <EnablePreviewFeatures>True</EnablePreviewFeatures>
   </PropertyGroup>
 

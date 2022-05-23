@@ -10,6 +10,9 @@ internal class KmlUpdateSerializer : SerializationHelper<KmlNetworkLinkControl>
     , ISerializationHelperStatic<KmlNetworkLinkControl>
 #endif
 {
+    protected override string Namespace => StaticNamespace;
+    public static string StaticNamespace => Namespaces.Kml;
+
     public static string StaticTag => "Update";
 
     protected override string Tag => StaticTag;

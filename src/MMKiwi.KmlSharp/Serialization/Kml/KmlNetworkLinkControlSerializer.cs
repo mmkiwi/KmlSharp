@@ -10,9 +10,11 @@ internal class KmlNetworkLinkControlSerializer : SerializationHelper<KmlNetworkL
     , ISerializationHelperStatic<KmlNetworkLinkControl>
 #endif
 {
-    public static string StaticTag => "NetworkLinkControlSerializer";
-
+    protected override string Namespace => StaticNamespace;
+    public static string StaticNamespace => Namespaces.Kml;
     protected override string Tag => StaticTag;
+
+    public static string StaticTag => "NetworkLinkControlSerializer";
 
     public static async Task<KmlNetworkLinkControl> StaticReadTagAsync(XmlReader reader)
     {

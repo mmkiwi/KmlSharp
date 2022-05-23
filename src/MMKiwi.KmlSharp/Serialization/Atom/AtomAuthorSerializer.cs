@@ -14,6 +14,10 @@ internal class AtomAuthorSerializer : SerializationHelper<AtomAuthor>
     protected override string Tag => StaticTag;
     public static string StaticTag => "author";
 
+    protected override string Namespace => StaticNamespace;
+    public static string StaticNamespace => Namespaces.Atom;
+    
+
     public static async Task<AtomAuthor> StaticReadTagAsync(XmlReader reader)
     {
         _ = reader.MoveToElement();

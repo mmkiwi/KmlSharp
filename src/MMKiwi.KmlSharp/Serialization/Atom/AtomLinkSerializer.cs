@@ -13,8 +13,11 @@ internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
     , ISerializationHelperStatic<AtomLink>
 #endif
 {
-    protected override string Tag => "link";
+    protected override string Tag => StaticTag;
     public static string StaticTag => "link";
+
+    protected override string Namespace => StaticNamespace;
+    public static string StaticNamespace => Namespaces.Atom;
 
     public static async Task<AtomLink> StaticReadTagAsync(XmlReader reader)
     {

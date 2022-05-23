@@ -3,18 +3,21 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 using Color = System.Drawing.Color;
 using Humanizer;
+using System.Diagnostics;
+
 namespace MMKiwi.KmlSharp.Serialization;
 
 internal abstract class SerializationHelper<T> : ISerializationHelper<T> where T : class
 {
     protected virtual bool PrefixAttributes => false;
     protected abstract string Tag { get; }
+    protected abstract string Namespace { get; }
     public virtual async Task<T?> ReadRootTagAsync(XmlReader reader)
     {
         T? o = null;
         if (reader.MoveToContent() == System.Xml.XmlNodeType.Element)
         {
-            o = reader.LocalName == Tag && reader.NamespaceURI == Namespaces.Atom
+            o = reader.LocalName == Tag && reader.NamespaceURI == Namespace
                 ? await ReadTagAsync(reader).ConfigureAwait(false)
                 : throw new ArgumentException($"Tag {reader.LocalName} was not expected");
         }
@@ -23,10 +26,10 @@ internal abstract class SerializationHelper<T> : ISerializationHelper<T> where T
     public abstract Task<T> ReadTagAsync(XmlReader reader);
     public virtual async Task WriteRootTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
     {
-        string? prefix = ns?.LookupPrefix(Namespaces.Atom) ?? "";
+        string? prefix = ns?.LookupPrefix(Namespace) ?? "";
         writer.WriteStartDocument();
         if (o == null)
-            await Helpers.WriteEmptyElementAsync(writer, prefix, Tag, Namespaces.Atom).ConfigureAwait(false);
+            await Helpers.WriteEmptyElementAsync(writer, prefix, Tag, Namespace).ConfigureAwait(false);
         else
             await WriteTagAsync(writer, o, ns, options).ConfigureAwait(false);
     }
@@ -51,11 +54,23 @@ internal static class Helpers
         return await reader.ReadElementContentAsStringAsync().ConfigureAwait(false);
     }
 
+
+    public static double ReadElementDoubleAsync(XmlReader reader, HashSet<string> alreadySet)
+    {
+        _ = alreadySet.Add(reader.Name);
+        return reader.ReadElementContentAsDouble();
+    }
+
     public static async Task<Color> ReadElementColorAsync(XmlReader reader, HashSet<string> alreadySet)
     {
         _ = alreadySet.Add(reader.Name);
-        byte[] result = new byte[4];
-        _ = await reader.ReadElementContentAsBinHexAsync(result, 0, 4).ConfigureAwait(false);
+        byte[] result = new byte[10];
+
+        if (await reader.ReadElementContentAsBinHexAsync(result,0,10).ConfigureAwait(false) != 4)
+            throw new FormatException($"Could not parse color {await reader.ReadOuterXmlAsync().ConfigureAwait(false)}");
+        
+        await reader.ReadElementContentAsBinHexAsync(result,0,10).ConfigureAwait(false);
+
         return Color.FromArgb(result[0], result[3], result[2], result[1]);
     }
 
@@ -64,7 +79,7 @@ internal static class Helpers
 
 
     public static string ToKmlString<T>(this T enumVal, EnumConvertMode mode = EnumConvertMode.CamelCase)
-        where T : struct, Enum 
+        where T : struct, Enum
         => mode switch
         {
             EnumConvertMode.CamelCase => enumVal.ToString().Camelize(),
@@ -79,7 +94,7 @@ internal static class Helpers
     {
         _ = alreadySet.Add(reader.Name);
         string res = await reader.ReadElementContentAsStringAsync().ConfigureAwait(false);
-        return Enum.Parse<T>(res);
+        return Enum.Parse<T>(res.Pascalize());
     }
 
     public static async Task<string> ReadAttributeString(XmlReader reader, HashSet<string> alreadySet)

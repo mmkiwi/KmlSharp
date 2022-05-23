@@ -21,8 +21,10 @@ internal static class Helpers
         return await KmlSerializer.DeserializeAsync<T>(reader);
     }
 
-    public static async Task<XDocument> ToXDocument<T>(this T input)
+
+    public static async Task<XDocument> ToXDocument<T>(this T input, KmlWriteOptions? options = null)
     {
+        options ??= KmlWriteOptions.Default;
         XmlNamespaceManager? ns = new(new NameTable());
         ns.AddNamespace("", Namespaces.Kml);
         ns.AddNamespace("atom", Namespaces.Atom);
@@ -33,7 +35,7 @@ internal static class Helpers
             Async = true,
             NamespaceHandling = NamespaceHandling.OmitDuplicates,
         });
-        await KmlSerializer.SerializeAsync(input, writer, ns);
+        await KmlSerializer.SerializeAsync(input, writer, ns, options);
 
         memStm.Position = 0;
 

@@ -3,6 +3,7 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 using AtomObj = MMKiwi.KmlSharp.Atom;
+using KmlObj = MMKiwi.KmlSharp.Kml;
 
 namespace MMKiwi.KmlSharp.Serialization;
 public static partial class KmlSerializer
@@ -14,6 +15,7 @@ public static partial class KmlSerializer
         Serializers = new();
         AddSerializer<AtomObj.AtomAuthor, Atom.AtomAuthorSerializer>();
         AddSerializer<AtomObj.AtomLink, Atom.AtomLinkSerializer>();
+        AddSerializer<KmlObj.KmlLineStyle, Kml.KmlLineStyleSerializer>();
     }
 
     private static void AddSerializer<TObject, THelper>()
@@ -22,13 +24,13 @@ public static partial class KmlSerializer
         Serializers.Add(typeof(TObject), new(() => new THelper()));
     }
 
-    public static async Task SerializeAsync<T>(T obj, XmlWriter writer, XmlNamespaceManager? ns = null)
+    public static async Task SerializeAsync<T>(T obj, XmlWriter writer, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
     {
         ISerializationHelper<T>? serializationHelper = GetSerializer<T>();
         if (serializationHelper == null)
             throw new ArgumentException($"Could not find serializer for {typeof(T)}", nameof(obj));
 
-        await serializationHelper.WriteRootTagAsync(writer, obj, ns).ConfigureAwait(false);
+        await serializationHelper.WriteRootTagAsync(writer, obj, ns, options).ConfigureAwait(false);
         writer.Flush();
     }
 
