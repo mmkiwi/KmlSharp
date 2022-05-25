@@ -3,11 +3,44 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 using MMKiwi.KmlSharp.Kml;
+
 using Color = System.Drawing.Color;
 
 namespace MMKiwi.KmlSharp.Tests;
 public class KmlLabelStyleTests
 {
+    [Fact]
+    public async Task SerializeWithUnknown()
+    {
+        KmlLabelStyle style = new();
+        style.UnknownAttributes.Add(XName.Get("style", Namespaces.Html), "display:none;");
+        style.UnknownElements.Add(new XElement(XName.Get("p", Namespaces.Html), "This is an HTML paragraph"));
+        XDocument xDoc = await style.ToXDocument();
+        _ = xDoc.Should().BeEquivalentTo(new XDocument(
+            new XElement(XName.Get("LabelStyle", Namespaces.Kml),
+                new XAttribute(XName.Get("style", Namespaces.Html), "display:none;"),
+                new XElement(XName.Get("p", Namespaces.Html), "This is an HTML paragraph")
+            )
+        ));
+    }
+
+    [Fact]
+    public async Task DeerializeWithUnknown()
+    {
+        const string xml = $"""
+            <LabelStyle xmlns="{Namespaces.Kml}" xmlns:html="{Namespaces.Html}" html:style="display:none;" >
+                <html:p>This is an HTML paragraph</html:p>
+            </LabelStyle>
+            """;
+        
+        KmlLabelStyle labelStyle = new();
+        labelStyle.UnknownAttributes.Add(XName.Get("style", Namespaces.Html), "display:none;");
+        labelStyle.UnknownElements.Add(new XElement(XName.Get("p", Namespaces.Html), "This is an HTML paragraph"));
+        KmlLabelStyle? compObject = await xml.Deserialize<KmlLabelStyle>();
+        _ = compObject.Should().BeEquivalentTo(labelStyle);
+    }
+
+
     [Fact]
     public async Task SerializeWithRequired()
     {
@@ -22,7 +55,8 @@ public class KmlLabelStyleTests
     public async Task SerializeWithDefault()
     {
         KmlLabelStyle style = new();
-        XDocument xDoc = await style.ToXDocument(new Serialization.KmlWriteOptions{
+        XDocument xDoc = await style.ToXDocument(new Serialization.KmlWriteOptions
+        {
             EmitValuesWhenDefault = true
         });
         _ = xDoc.Should().BeEquivalentTo(new XDocument(
@@ -36,7 +70,8 @@ public class KmlLabelStyleTests
     [Fact]
     public async Task SerializeWithAll()
     {
-        KmlLabelStyle style = new(){
+        KmlLabelStyle style = new()
+        {
             Color = Color.FromArgb(128, 16, 255, 72),
             ColorMode = KmlColorMode.Random,
             Id = "TestId",
@@ -88,7 +123,7 @@ public class KmlLabelStyleTests
         {
             Id = "TestID",
             TargetId = "#fakeTarget",
-            Scale=100.75,
+            Scale = 100.75,
             Color = Color.FromArgb(100, Color.BlanchedAlmond),
             ColorMode = KmlColorMode.Random
         };

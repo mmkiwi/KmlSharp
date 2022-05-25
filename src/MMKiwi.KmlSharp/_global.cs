@@ -9,4 +9,6 @@ public static class Namespaces
 {
     public const string Atom = "http://www.w3.org/2005/Atom";
     public const string Kml = "http://www.opengis.net/kml/2.2";
+    public const string Html = "http://www.w3.org/1999/xhtml";
+    public const string GoogleExtensions = "http://www.google.com/kml/ext/2.2";
 }

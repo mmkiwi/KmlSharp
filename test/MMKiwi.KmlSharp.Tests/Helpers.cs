@@ -21,13 +21,14 @@ internal static class Helpers
         return await KmlSerializer.DeserializeAsync<T>(reader);
     }
 
-
     public static async Task<XDocument> ToXDocument<T>(this T input, KmlWriteOptions? options = null)
     {
         options ??= KmlWriteOptions.Default;
         XmlNamespaceManager? ns = new(new NameTable());
         ns.AddNamespace("", Namespaces.Kml);
         ns.AddNamespace("atom", Namespaces.Atom);
+        ns.AddNamespace("html", Namespaces.Html);
+        ns.AddNamespace("gx", Namespaces.GoogleExtensions);
 
         using MemoryStream memStm = new();
         using XmlWriter? writer = XmlWriter.Create(memStm, new()
