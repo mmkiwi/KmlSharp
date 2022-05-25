@@ -18,7 +18,7 @@ internal class KmlListStyleSerializer : SerializationHelper<KmlListStyle>
     protected override string Tag => StaticTag;
     public static string StaticTag => "ListStyle";
 
-    public static async Task<KmlListStyle> StaticReadTagAsync(XmlReader reader)
+    public static async Task<KmlListStyle> StaticReadTagAsync(XmlReader reader, CancellationToken ct = default)
     {
         _ = reader.MoveToElement();
 
@@ -27,7 +27,8 @@ internal class KmlListStyleSerializer : SerializationHelper<KmlListStyle>
         HashSet<string> alreadyLoadedAtt = new();
         while (reader.MoveToNextAttribute())
         {
-            _ = await KmlAbstractColorSerializer.ReadAbstractAttributesAsync(reader, o, alreadyLoadedAtt).ConfigureAwait(false);
+            if (!await KmlAbstractColorSerializer.ReadAbstractAttributesAsync(reader, o, alreadyLoadedAtt, ct).ConfigureAwait(false))
+                KmlAbstractObjectSerializer.LoadUnknownAttribueAsync(reader, o);
         }
 
         HashSet<string> alreadyLoaded = new();
@@ -47,11 +48,10 @@ internal class KmlListStyleSerializer : SerializationHelper<KmlListStyle>
                 else if (Helpers.CheckElementName(reader, "bgColor", Namespaces.Kml, alreadyLoaded))
                     o.BgColor = await Helpers.ReadElementColorAsync(reader, alreadyLoaded).ConfigureAwait(false);
                 else if (Helpers.CheckElementName(reader, "ItemIcon", Namespaces.Kml, alreadyLoaded))
-                    o.ItemIcons.Add(await KmlItemIconSerializer.StaticReadTagAsync(reader).ConfigureAwait(false));
-                else if (!await KmlAbstractColorSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt).ConfigureAwait(false))
+                    o.ItemIcons.Add(await KmlItemIconSerializer.StaticReadTagAsync(reader, ct).ConfigureAwait(false));
+                else if (!await KmlAbstractColorSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt, ct).ConfigureAwait(false))
                 {
-#warning todo unknown elements
-                    throw new NotImplementedException();
+                    await KmlAbstractObjectSerializer.LoadUnknownElementAsync(reader, o, ct).ConfigureAwait(false);
                 }
             }
         }
@@ -60,7 +60,7 @@ internal class KmlListStyleSerializer : SerializationHelper<KmlListStyle>
         return o;
     }
 
-    public static async Task StaticWriteTagAsync(XmlWriter writer, KmlListStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
+    public static async Task StaticWriteTagAsync(XmlWriter writer, KmlListStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
     {
         options ??= KmlWriteOptions.Default;
         string? prefix = ns?.LookupPrefix(Namespaces.Kml) ?? "";
@@ -68,7 +68,7 @@ internal class KmlListStyleSerializer : SerializationHelper<KmlListStyle>
             return;
 
         await writer.WriteStartElementAsync(prefix, StaticTag, Namespaces.Kml).ConfigureAwait(false);
-        await KmlAbstractColorSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns).ConfigureAwait(false);
+        await KmlAbstractColorSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns, ct).ConfigureAwait(false);
         if (o.MaxSnippetLines != 2 || options.EmitValuesWhenDefault)
             await writer.WriteElementStringAsync(prefix, "maxSnippetLines", Namespaces.Kml, o.MaxSnippetLines.ToString(CultureInfo.InvariantCulture)).ConfigureAwait(false);
         if (o.ListItemType != KmlListItemType.Check || options.EmitValuesWhenDefault)
@@ -76,14 +76,14 @@ internal class KmlListStyleSerializer : SerializationHelper<KmlListStyle>
         if (o.BgColor != Color.White || options.EmitValuesWhenDefault)
             await writer.WriteElementStringAsync(prefix, "bgColor", Namespaces.Kml, o.BgColor.ToKmlString()).ConfigureAwait(false);
         foreach(var icon in o.ItemIcons)
-            await KmlItemIconSerializer.StaticWriteTagAsync(writer, icon, ns, options).ConfigureAwait(false);
-        await KmlAbstractColorSerializer.WriteAbstractElementsAsync(writer, o, options, ns).ConfigureAwait(false);
+            await KmlItemIconSerializer.StaticWriteTagAsync(writer, icon, ns, options, ct).ConfigureAwait(false);
+        await KmlAbstractColorSerializer.WriteAbstractElementsAsync(writer, o, options, ns, ct).ConfigureAwait(false);
         await writer.WriteEndElementAsync().ConfigureAwait(false);
     }
 
-    public override Task WriteTagAsync(XmlWriter writer, KmlListStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
-        => StaticWriteTagAsync(writer, o, ns, options);
+    public override Task WriteTagAsync(XmlWriter writer, KmlListStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
+        => StaticWriteTagAsync(writer, o, ns, options, ct);
 
-    public override Task<KmlListStyle> ReadTagAsync(XmlReader reader)
-        => StaticReadTagAsync(reader);
+    public override Task<KmlListStyle> ReadTagAsync(XmlReader reader, CancellationToken ct = default)
+        => StaticReadTagAsync(reader, ct);
 }

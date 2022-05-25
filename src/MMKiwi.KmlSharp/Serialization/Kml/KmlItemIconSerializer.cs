@@ -17,7 +17,7 @@ internal class KmlItemIconSerializer : SerializationHelper<KmlItemIcon>
     protected override string Tag => StaticTag;
     public static string StaticTag => "ItemIcon";
 
-    public static async Task<KmlItemIcon> StaticReadTagAsync(XmlReader reader)
+    public static async Task<KmlItemIcon> StaticReadTagAsync(XmlReader reader, CancellationToken ct = default)
     {
         _ = reader.MoveToElement();
 
@@ -26,16 +26,17 @@ internal class KmlItemIconSerializer : SerializationHelper<KmlItemIcon>
         HashSet<string> alreadyLoadedAtt = new();
         while (reader.MoveToNextAttribute())
         {
-            _ = await KmlObjectSerializer.ReadAbstractAttributesAsync(reader, o, alreadyLoadedAtt).ConfigureAwait(false);
+            if(!await KmlAbstractObjectSerializer.ReadAbstractAttributesAsync(reader, o, alreadyLoadedAtt, ct).ConfigureAwait(false))
+            KmlAbstractObjectSerializer.LoadUnknownAttribueAsync(reader, o);
         }
 
         HashSet<string> alreadyLoaded = new();
         reader.ReadStartElement();
-        
+
         int i = 0;
         while (await reader.MoveToContentAsync().ConfigureAwait(false) is not XmlNodeType.EndElement and not XmlNodeType.None)
         {
-            if(i++ >= 100)
+            if (i++ >= 100)
                 throw new StackOverflowException();
             if (reader.NodeType == XmlNodeType.Element)
             {
@@ -43,19 +44,18 @@ internal class KmlItemIconSerializer : SerializationHelper<KmlItemIcon>
                     o.State = new(await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
                 else if (Helpers.CheckElementName(reader, "href", Namespaces.Kml, alreadyLoaded))
                     o.Href = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
-                else if (!await KmlObjectSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt).ConfigureAwait(false))
+                else if (!await KmlAbstractObjectSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt, ct).ConfigureAwait(false))
                 {
-#warning todo unknown elements
-                    throw new NotImplementedException();
+                    await KmlAbstractObjectSerializer.LoadUnknownElementAsync(reader, o, ct).ConfigureAwait(false);
                 }
             }
         }
-        if(reader.NodeType != XmlNodeType.None)
+        if (reader.NodeType != XmlNodeType.None)
             reader.ReadEndElement();
         return o;
     }
 
-    public static async Task StaticWriteTagAsync(XmlWriter writer, KmlItemIcon o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
+    public static async Task StaticWriteTagAsync(XmlWriter writer, KmlItemIcon o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
     {
         options ??= KmlWriteOptions.Default;
         string? prefix = ns?.LookupPrefix(Namespaces.Kml) ?? "";
@@ -63,18 +63,18 @@ internal class KmlItemIconSerializer : SerializationHelper<KmlItemIcon>
             return;
 
         await writer.WriteStartElementAsync(prefix, StaticTag, Namespaces.Kml).ConfigureAwait(false);
-        await KmlObjectSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns).ConfigureAwait(false);
+        await KmlAbstractObjectSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns, ct).ConfigureAwait(false);
         if (o.State != KmlState.Default || options.EmitValuesWhenDefault)
             await writer.WriteElementStringAsync(prefix, "state", Namespaces.Kml, o.State.ToString()).ConfigureAwait(false);
         if (!string.IsNullOrWhiteSpace(o.Href) || options.EmitValuesWhenDefault)
             await writer.WriteElementStringAsync(prefix, "href", Namespaces.Kml, o.Href ?? "").ConfigureAwait(false);
-        await KmlObjectSerializer.WriteAbstractElementsAsync(writer, o, options, ns).ConfigureAwait(false);
+        await KmlAbstractObjectSerializer.WriteAbstractElementsAsync(writer, o, options, ns, ct).ConfigureAwait(false);
         await writer.WriteEndElementAsync().ConfigureAwait(false);
     }
 
-    public override Task WriteTagAsync(XmlWriter writer, KmlItemIcon o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
-        => StaticWriteTagAsync(writer, o, ns, options);
+    public override Task WriteTagAsync(XmlWriter writer, KmlItemIcon o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
+        => StaticWriteTagAsync(writer, o, ns, options, ct);
 
-    public override Task<KmlItemIcon> ReadTagAsync(XmlReader reader)
-        => StaticReadTagAsync(reader);
+    public override Task<KmlItemIcon> ReadTagAsync(XmlReader reader, CancellationToken ct = default)
+        => StaticReadTagAsync(reader, ct);
 }
