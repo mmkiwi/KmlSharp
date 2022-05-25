@@ -6,18 +6,18 @@ namespace MMKiwi.KmlSharp.Serialization;
 
 internal interface ISerializationHelper<T>
 {
-    Task WriteRootTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null);
-    Task WriteTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null);
-    Task<T> ReadTagAsync(XmlReader reader);
-    Task<T?> ReadRootTagAsync(XmlReader reader);
+    Task WriteRootTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default);
+    Task WriteTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default);
+    Task<T> ReadTagAsync(XmlReader reader, CancellationToken ct = default);
+    Task<T?> ReadRootTagAsync(XmlReader reader, CancellationToken ct = default);
 }
 #if NET7_0_OR_GREATER
 internal interface ISerializationHelperStatic<T>
 {
     static abstract string StaticNamespace { get; }
     static abstract string StaticTag { get; }
-    static abstract Task StaticWriteTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null);
-    static abstract Task<T> StaticReadTagAsync(XmlReader reader);
+    static abstract Task StaticWriteTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default);
+    static abstract Task<T> StaticReadTagAsync(XmlReader reader, CancellationToken ct = default);
 }
 #endif
 

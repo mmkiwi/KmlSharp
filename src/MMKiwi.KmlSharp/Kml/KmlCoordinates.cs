@@ -11,7 +11,6 @@ public record class KmlCoordinates(double X , double Y, double? Z)
         => Invariant($"{X},{Y}{(Z.HasValue ? "," : "")}{Z}");
 }
 
-
 public static class KmlCoordinatesExtensions
 {
     public static string ToCoordString(this IEnumerable<KmlCoordinates> coordinates)

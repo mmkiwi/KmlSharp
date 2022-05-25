@@ -12,28 +12,28 @@ internal abstract class SerializationHelper<T> : ISerializationHelper<T> where T
     protected virtual bool PrefixAttributes => false;
     protected abstract string Tag { get; }
     protected abstract string Namespace { get; }
-    public virtual async Task<T?> ReadRootTagAsync(XmlReader reader)
+    public virtual async Task<T?> ReadRootTagAsync(XmlReader reader, CancellationToken ct = default)
     {
         T? o = null;
         if (reader.MoveToContent() == System.Xml.XmlNodeType.Element)
         {
             o = reader.LocalName == Tag && reader.NamespaceURI == Namespace
-                ? await ReadTagAsync(reader).ConfigureAwait(false)
+                ? await ReadTagAsync(reader, ct).ConfigureAwait(false)
                 : throw new ArgumentException($"Tag {reader.LocalName} was not expected");
         }
         return o;
     }
-    public abstract Task<T> ReadTagAsync(XmlReader reader);
-    public virtual async Task WriteRootTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
+    public abstract Task<T> ReadTagAsync(XmlReader reader, CancellationToken ct = default);
+    public virtual async Task WriteRootTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
     {
         string? prefix = ns?.LookupPrefix(Namespace) ?? "";
         writer.WriteStartDocument();
         if (o == null)
             await Helpers.WriteEmptyElementAsync(writer, prefix, Tag, Namespace).ConfigureAwait(false);
         else
-            await WriteTagAsync(writer, o, ns, options).ConfigureAwait(false);
+            await WriteTagAsync(writer, o, ns, options, ct).ConfigureAwait(false);
     }
-    public abstract Task WriteTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null);
+    public abstract Task WriteTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default);
 }
 
 internal static class Helpers
@@ -53,7 +53,6 @@ internal static class Helpers
         _ = alreadySet.Add(reader.Name);
         return await reader.ReadElementContentAsStringAsync().ConfigureAwait(false);
     }
-
 
     public static async Task<double> ReadElementDoubleAsync(XmlReader reader, HashSet<string> alreadySet)
     {
@@ -85,7 +84,6 @@ internal static class Helpers
     public static string ToKmlString(this Color color)
         => $"{color.A:x}{color.B:x}{color.G:x}{color.R:x}";
 
-
     public static string ToKmlString<T>(this T enumVal, EnumConvertMode mode = EnumConvertMode.CamelCase)
         where T : struct, Enum
         => mode switch
@@ -106,7 +104,6 @@ internal static class Helpers
             (false, BoolConvertMode.Numeric) => "0",
             _ => throw new NotImplementedException(),
         };
-
 
     public static async Task<T> ReadElementEnumAsync<T>(XmlReader reader, HashSet<string> alreadySet)
         where T : struct, Enum

@@ -19,7 +19,7 @@ internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
     protected override string Namespace => StaticNamespace;
     public static string StaticNamespace => Namespaces.Atom;
 
-    public static async Task<AtomLink> StaticReadTagAsync(XmlReader reader)
+    public static async Task<AtomLink> StaticReadTagAsync(XmlReader reader, CancellationToken ct = default)
     {
         _ = reader.MoveToElement();
         AtomLink? o = new();
@@ -48,7 +48,7 @@ internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
         return o;
     }
 
-    public static async Task StaticWriteTagAsync(XmlWriter writer, AtomLink obj, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
+    public static async Task StaticWriteTagAsync(XmlWriter writer, AtomLink obj, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
     {
         options ??= KmlWriteOptions.Default;
         string prefix = "";
@@ -73,13 +73,9 @@ internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
         await writer.WriteEndElementAsync().ConfigureAwait(false);
     }
 
-    public override Task<AtomLink> ReadTagAsync(XmlReader reader)
-    {
-        return StaticReadTagAsync(reader);
-    }
+    public override Task<AtomLink> ReadTagAsync(XmlReader reader, CancellationToken ct = default) 
+        => StaticReadTagAsync(reader, ct);
 
-    public override Task WriteTagAsync(XmlWriter writer, AtomLink o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
-    {
-        return StaticWriteTagAsync(writer, o, ns, options);
-    }
+    public override Task WriteTagAsync(XmlWriter writer, AtomLink o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default) 
+        => StaticWriteTagAsync(writer, o, ns, options, ct);
 }

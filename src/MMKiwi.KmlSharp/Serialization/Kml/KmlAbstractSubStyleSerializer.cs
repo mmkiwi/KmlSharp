@@ -11,24 +11,24 @@ internal class KmlAbstractSubStyleSerializer : IAbstractSerializationHelper<KmlO
 , IAbstractSerializationHelperStatic<KmlObj>
 #endif
 {
-    public static Task<bool> ReadAbstractAttributesAsync(XmlReader reader, KmlObj o, HashSet<string> alreadyLoaded)
-        => KmlObjectSerializer.ReadAbstractAttributesAsync(reader, o, alreadyLoaded);
+    public static Task<bool> ReadAbstractAttributesAsync(XmlReader reader, KmlObj o, HashSet<string> alreadyLoaded, CancellationToken ct = default)
+        => KmlAbstractObjectSerializer.ReadAbstractAttributesAsync(reader, o, alreadyLoaded, ct);
 
-    public static Task<bool> ReadAbstractElementsAsync(XmlReader reader, KmlObj o, HashSet<string> alreadyLoaded)
-        => KmlObjectSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoaded);
+    public static Task<bool> ReadAbstractElementsAsync(XmlReader reader, KmlObj o, HashSet<string> alreadyLoaded, CancellationToken ct = default)
+        => KmlAbstractObjectSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoaded, ct);
 
-    public static Task WriteAbstractAttributesAsync(XmlWriter writer, KmlObj o, string prefix, KmlWriteOptions options, XmlNamespaceManager? ns = null)
-        => KmlObjectSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns);
+    public static Task WriteAbstractAttributesAsync(XmlWriter writer, KmlObj o, string prefix, KmlWriteOptions options, XmlNamespaceManager? ns = null, CancellationToken ct = default)
+        => KmlAbstractObjectSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns, ct);
 
-    public static Task WriteAbstractElementsAsync(XmlWriter writer, KmlObj o, KmlWriteOptions options, XmlNamespaceManager? ns = null)
-        => KmlObjectSerializer.WriteAbstractElementsAsync(writer, o, options, ns);
+    public static Task WriteAbstractElementsAsync(XmlWriter writer, KmlObj o, KmlWriteOptions options, XmlNamespaceManager? ns = null, CancellationToken ct = default)
+        => KmlAbstractObjectSerializer.WriteAbstractElementsAsync(writer, o, options, ns, ct);
 
-    Task IAbstractSerializationHelper<KmlObj>.WriteAbstractAttributesAsync(XmlWriter writer, KmlObj o, string prefix, KmlWriteOptions options, XmlNamespaceManager? ns)
-        => WriteAbstractAttributesAsync(writer, o, prefix, options, ns);
-    Task IAbstractSerializationHelper<KmlObj>.WriteAbstractElementsAsync(XmlWriter writer, KmlObj o, KmlWriteOptions options, XmlNamespaceManager? ns)
-        => WriteAbstractElementsAsync(writer, o, options, ns);
-    Task<bool> IAbstractSerializationHelper<KmlObj>.ReadAbstractAttributesAsync(XmlReader reader, KmlObj o, HashSet<string> alreadyLoaded)
-        => ReadAbstractAttributesAsync(reader, o, alreadyLoaded);
-    Task<bool> IAbstractSerializationHelper<KmlObj>.ReadAbstractElementsAsync(XmlReader reader, KmlObj o, HashSet<string> alreadyLoaded)
-        => ReadAbstractElementsAsync(reader, o, alreadyLoaded);
+    Task IAbstractSerializationHelper<KmlObj>.WriteAbstractAttributesAsync(XmlWriter writer, KmlObj o, string prefix, KmlWriteOptions options, XmlNamespaceManager? ns, CancellationToken ct)
+        => WriteAbstractAttributesAsync(writer, o, prefix, options, ns, ct);
+    Task IAbstractSerializationHelper<KmlObj>.WriteAbstractElementsAsync(XmlWriter writer, KmlObj o, KmlWriteOptions options, XmlNamespaceManager? ns, CancellationToken ct)
+        => WriteAbstractElementsAsync(writer, o, options, ns, ct);
+    Task<bool> IAbstractSerializationHelper<KmlObj>.ReadAbstractAttributesAsync(XmlReader reader, KmlObj o, HashSet<string> alreadyLoaded, CancellationToken ct)
+        => ReadAbstractAttributesAsync(reader, o, alreadyLoaded, ct);
+    Task<bool> IAbstractSerializationHelper<KmlObj>.ReadAbstractElementsAsync(XmlReader reader, KmlObj o, HashSet<string> alreadyLoaded, CancellationToken ct)
+        => ReadAbstractElementsAsync(reader, o, alreadyLoaded, ct);
 }

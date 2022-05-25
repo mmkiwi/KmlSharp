@@ -17,7 +17,7 @@ internal class KmlLabelStyleSerializer : SerializationHelper<KmlLabelStyle>
     protected override string Tag => StaticTag;
     public static string StaticTag => "LabelStyle";
 
-    public static async Task<KmlLabelStyle> StaticReadTagAsync(XmlReader reader)
+    public static async Task<KmlLabelStyle> StaticReadTagAsync(XmlReader reader, CancellationToken ct = default)
     {
         _ = reader.MoveToElement();
 
@@ -26,24 +26,22 @@ internal class KmlLabelStyleSerializer : SerializationHelper<KmlLabelStyle>
         HashSet<string> alreadyLoadedAtt = new();
         while (reader.MoveToNextAttribute())
         {
-            _ = await KmlAbstractColorSerializer.ReadAbstractAttributesAsync(reader, o, alreadyLoadedAtt).ConfigureAwait(false);
+            if (!await KmlAbstractColorSerializer.ReadAbstractAttributesAsync(reader, o, alreadyLoadedAtt, ct).ConfigureAwait(false))
+                KmlAbstractObjectSerializer.LoadUnknownAttribueAsync(reader, o);
         }
 
         HashSet<string> alreadyLoaded = new();
         reader.ReadStartElement();
-        
-        int i = 0;
         while (await reader.MoveToContentAsync().ConfigureAwait(false) is not XmlNodeType.EndElement and not XmlNodeType.None)
         {
-            if(i++ >= 100)
-                throw new StackOverflowException();
+            ct.ThrowIfCancellationRequested();
             if (reader.NodeType == XmlNodeType.Element)
             {
                 if (Helpers.CheckElementName(reader, "scale", Namespaces.Kml, alreadyLoaded))
                     o.Scale = await Helpers.ReadElementDoubleAsync(reader, alreadyLoaded).ConfigureAwait(false);
-                else if (!await KmlAbstractColorSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt).ConfigureAwait(false))
+                else if (!await KmlAbstractColorSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt, ct).ConfigureAwait(false))
                 {
-#warning todo unknown elements
+                    await KmlAbstractObjectSerializer.LoadUnknownElementAsync(reader, o, ct).ConfigureAwait(false);
                 }
             }
         }
@@ -52,7 +50,7 @@ internal class KmlLabelStyleSerializer : SerializationHelper<KmlLabelStyle>
         return o;
     }
 
-    public static async Task StaticWriteTagAsync(XmlWriter writer, KmlLabelStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
+    public static async Task StaticWriteTagAsync(XmlWriter writer, KmlLabelStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
     {
         options ??= KmlWriteOptions.Default;
         string? prefix = ns?.LookupPrefix(Namespaces.Kml) ?? "";
@@ -60,16 +58,16 @@ internal class KmlLabelStyleSerializer : SerializationHelper<KmlLabelStyle>
             return;
 
         await writer.WriteStartElementAsync(prefix, StaticTag, Namespaces.Kml).ConfigureAwait(false);
-        await KmlAbstractColorSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns).ConfigureAwait(false);
+        await KmlAbstractColorSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns, ct).ConfigureAwait(false);
         if (o.Scale != 1 || options.EmitValuesWhenDefault)
             await writer.WriteElementStringAsync(prefix, "scale", Namespaces.Kml, o.Scale.ToString(CultureInfo.InvariantCulture)).ConfigureAwait(false);
-        await KmlAbstractColorSerializer.WriteAbstractElementsAsync(writer, o, options, ns).ConfigureAwait(false);
+        await KmlAbstractColorSerializer.WriteAbstractElementsAsync(writer, o, options, ns, ct).ConfigureAwait(false);
         await writer.WriteEndElementAsync().ConfigureAwait(false);
     }
 
-    public override Task WriteTagAsync(XmlWriter writer, KmlLabelStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
-        => StaticWriteTagAsync(writer, o, ns, options);
+    public override Task WriteTagAsync(XmlWriter writer, KmlLabelStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
+        => StaticWriteTagAsync(writer, o, ns, options, ct);
 
-    public override Task<KmlLabelStyle> ReadTagAsync(XmlReader reader)
-        => StaticReadTagAsync(reader);
+    public override Task<KmlLabelStyle> ReadTagAsync(XmlReader reader, CancellationToken ct = default)
+        => StaticReadTagAsync(reader, ct);
 }
