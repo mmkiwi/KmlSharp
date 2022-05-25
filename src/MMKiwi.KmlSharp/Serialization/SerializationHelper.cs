@@ -4,6 +4,8 @@
 using Color = System.Drawing.Color;
 using Humanizer;
 using System.Diagnostics;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace MMKiwi.KmlSharp.Serialization;
 
@@ -36,7 +38,7 @@ internal abstract class SerializationHelper<T> : ISerializationHelper<T> where T
     public abstract Task WriteTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null);
 }
 
-internal static class Helpers
+internal static partial class Helpers
 {
     public static bool CheckElementName(XmlReader reader, string name, string ns, HashSet<string> alreadySet)
     {
@@ -62,6 +64,13 @@ internal static class Helpers
         return XmlConvert.ToDouble(res);
     }
 
+    public static async Task<int> ReadElementIntAsync(XmlReader reader, HashSet<string> alreadySet)
+    {
+        _ = alreadySet.Add(reader.Name);
+        string res = await reader.ReadElementContentAsStringAsync().ConfigureAwait(false);
+        return XmlConvert.ToInt32(res);
+    }
+
     public static async Task<bool> ReadElementBoolAsync(XmlReader reader, HashSet<string> alreadySet)
     {
         _ = alreadySet.Add(reader.Name);
@@ -69,21 +78,49 @@ internal static class Helpers
         return XmlConvert.ToBoolean(res);
     }
 
+const string hexColorRegex = @"^\s*(?<alpha>[a-zA-Z0-9]{2})?\s*(?<blue>[a-zA-Z0-9]{2})\s*(?<green>[a-zA-Z0-9]{2})\s*(?<red>[a-zA-Z0-9]{2})$";
+
+#if NET7_0_OR_GREATER
+    [RegexGenerator(hexColorRegex)]
+    private static partial Regex HexColorRegex();
+#else 
+    private static Regex HexColorRegex() => new(hexColorRegex, RegexOptions.CultureInvariant);
+#endif
+
     public static async Task<Color> ReadElementColorAsync(XmlReader reader, HashSet<string> alreadySet)
     {
         _ = alreadySet.Add(reader.Name);
-        byte[] result = new byte[10];
 
-        if (await reader.ReadElementContentAsBinHexAsync(result,0,10).ConfigureAwait(false) != 4)
-            throw new FormatException($"Could not parse color {await reader.ReadOuterXmlAsync().ConfigureAwait(false)}");
-        
-        await reader.ReadElementContentAsBinHexAsync(result,0,10).ConfigureAwait(false);
+        string colorStr = await reader.ReadElementContentAsStringAsync().ConfigureAwait(false);
+        Match? matches = HexColorRegex().Match(colorStr);
+        if (matches is null)
+            throw new FormatException($"Could not parse color {colorStr}");
 
-        return Color.FromArgb(result[0], result[3], result[2], result[1]);
+
+        return Color.FromArgb(alpha: matches.Groups["alpha"].ParseByteStr(colorStr),
+                                blue: matches.Groups["blue"].ParseByteStr(colorStr),
+                                green: matches.Groups["green"].ParseByteStr(colorStr),
+                                red: matches.Groups["red"].ParseByteStr(colorStr));
     }
 
+#if NET7_0_OR_GREATER
+    public static byte ParseByteStr(this Group inValue, string fullStr)
+        => inValue.Success
+            ? byte.TryParse(inValue.ValueSpan, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte result)
+                        ? result
+                        : throw new FormatException($"Could not parse color {fullStr}")
+            : (byte)255;
+#else
+    public static byte ParseByteStr(this Group inValue, string fullStr)
+        => inValue.Success
+            ? byte.TryParse(inValue.Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte result)
+                        ? result
+                        : throw new FormatException($"Could not parse color {fullStr}")
+            : (byte)255;
+#endif
+
     public static string ToKmlString(this Color color)
-        => $"{color.A:x}{color.B:x}{color.G:x}{color.R:x}";
+            => $"{color.A:x}{color.B:x}{color.G:x}{color.R:x}";
 
 
     public static string ToKmlString<T>(this T enumVal, EnumConvertMode mode = EnumConvertMode.CamelCase)

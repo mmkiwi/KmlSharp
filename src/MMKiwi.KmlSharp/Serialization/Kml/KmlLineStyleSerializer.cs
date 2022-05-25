@@ -44,6 +44,7 @@ internal class KmlLineStyleSerializer : SerializationHelper<KmlLineStyle>
                 else if (!await KmlAbstractColorSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt).ConfigureAwait(false))
                 {
 #warning todo unknown elements
+                    throw new NotImplementedException();
                 }
             }
         }

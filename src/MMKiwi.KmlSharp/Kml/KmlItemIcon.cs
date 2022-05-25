@@ -6,6 +6,6 @@ namespace MMKiwi.KmlSharp.Kml;
 
 public class KmlItemIcon : KmlAbstractObject
 {
-    public KmlState State { get; set; } = default;
+    public KmlState State { get; set; } = KmlState.Default;
     public string? Href { get; set; }
 }
