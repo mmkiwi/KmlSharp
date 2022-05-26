@@ -70,9 +70,9 @@ public class KmlItemIconTests
         const string xml = $"""
             <ItemIcon xmlns="{Namespaces.Kml}" />
             """;
-        KmlItemIcon ItemIcon = new();
+        KmlItemIcon itemIcon = new();
         KmlItemIcon? compObject = await xml.Deserialize<KmlItemIcon>();
-        _ = compObject.Should().BeEquivalentTo(ItemIcon);
+        _ = compObject.Should().BeEquivalentTo(itemIcon);
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class KmlItemIconTests
                 <href>#superFakeTarget</href>
             </ItemIcon>
             """;
-        KmlItemIcon ItemIcon = new()
+        KmlItemIcon itemIcon = new()
         {
             Id = "TestID",
             TargetId = "#fakeTarget",
@@ -92,6 +92,6 @@ public class KmlItemIconTests
             State = new(true, false, false, true, false, true, "test6 test7")
         };
         KmlItemIcon? compObject = await xml.Deserialize<KmlItemIcon>();
-        _ = compObject.Should().BeEquivalentTo(ItemIcon);
+        _ = compObject.Should().BeEquivalentTo(itemIcon);
     }
 }

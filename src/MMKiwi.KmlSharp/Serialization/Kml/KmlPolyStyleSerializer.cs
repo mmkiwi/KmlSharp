@@ -7,17 +7,15 @@ using System.Globalization;
 using MMKiwi.KmlSharp.Kml;
 
 namespace MMKiwi.KmlSharp.Serialization.Kml;
-internal class KmlPolyStyleSerializer : SerializationHelper<KmlPolyStyle>
+internal class KmlPolyStyleSerializer : ISerializationHelper<KmlPolyStyle>
 #if NET7_0_OR_GREATER
     , ISerializationHelperStatic<KmlPolyStyle>
 #endif
 {
-    protected override string Namespace => StaticNamespace;
-    public static string StaticNamespace => Namespaces.Kml;
-    protected override string Tag => StaticTag;
-    public static string StaticTag => "PolyStyle";
+    public static string Namespace => Namespaces.Kml;
+    public static string Tag => "PolyStyle";
 
-    public static async Task<KmlPolyStyle> StaticReadTagAsync(XmlReader reader, CancellationToken ct = default)
+    public static async Task<KmlPolyStyle> ReadTagAsync(XmlReader reader, CancellationToken ct = default)
     {
         _ = reader.MoveToElement();
 
@@ -52,14 +50,14 @@ internal class KmlPolyStyleSerializer : SerializationHelper<KmlPolyStyle>
         return o;
     }
 
-    public static async Task StaticWriteTagAsync(XmlWriter writer, KmlPolyStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
+    public static async Task WriteTagAsync(XmlWriter writer, KmlPolyStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
     {
         options ??= KmlWriteOptions.Default;
         string? prefix = ns?.LookupPrefix(Namespaces.Kml) ?? "";
         if (o == null)
             return;
 
-        await writer.WriteStartElementAsync(prefix, StaticTag, Namespaces.Kml).ConfigureAwait(false);
+        await writer.WriteStartElementAsync(prefix, Tag, Namespaces.Kml).ConfigureAwait(false);
         await KmlAbstractColorSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns, ct).ConfigureAwait(false);
         if (o.Fill != true || options.EmitValuesWhenDefault)
             await writer.WriteElementStringAsync(prefix, "fill", Namespaces.Kml, o.Fill.ToKmlString()).ConfigureAwait(false);
@@ -69,9 +67,12 @@ internal class KmlPolyStyleSerializer : SerializationHelper<KmlPolyStyle>
         await writer.WriteEndElementAsync().ConfigureAwait(false);
     }
 
-    public override Task WriteTagAsync(XmlWriter writer, KmlPolyStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
-        => StaticWriteTagAsync(writer, o, ns, options, ct);
+    Task ISerializationHelper<KmlPolyStyle>.WriteTagAsync(XmlWriter writer, KmlPolyStyle o, XmlNamespaceManager? ns, KmlWriteOptions? options, CancellationToken ct)
+        => WriteTagAsync(writer, o, ns, options, ct);
 
-    public override Task<KmlPolyStyle> ReadTagAsync(XmlReader reader, CancellationToken ct = default)
-        => StaticReadTagAsync(reader, ct);
+    Task<KmlPolyStyle> ISerializationHelper<KmlPolyStyle>.ReadTagAsync(XmlReader reader, CancellationToken ct)
+        => ReadTagAsync(reader, ct);
+
+    string ISerializationHelper<KmlPolyStyle>.Tag => Tag;
+    string ISerializationHelper<KmlPolyStyle>.Namespace => Namespace;
 }

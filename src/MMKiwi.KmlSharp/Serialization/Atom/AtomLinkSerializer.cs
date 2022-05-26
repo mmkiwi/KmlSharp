@@ -8,18 +8,15 @@ using MMKiwi.KmlSharp.Atom;
 
 namespace MMKiwi.KmlSharp.Serialization.Atom;
 
-internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
+internal sealed class AtomLinkSerializer : ISerializationHelper<AtomLink>
 #if NET7_0_OR_GREATER
     , ISerializationHelperStatic<AtomLink>
 #endif
 {
-    protected override string Tag => StaticTag;
-    public static string StaticTag => "link";
+    public static string Tag => "link";
+    public static string Namespace => Namespaces.Atom;
 
-    protected override string Namespace => StaticNamespace;
-    public static string StaticNamespace => Namespaces.Atom;
-
-    public static async Task<AtomLink> StaticReadTagAsync(XmlReader reader, CancellationToken ct = default)
+    public static async Task<AtomLink> ReadTagAsync(XmlReader reader, CancellationToken ct = default)
     {
         _ = reader.MoveToElement();
         AtomLink? o = new();
@@ -48,7 +45,7 @@ internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
         return o;
     }
 
-    public static async Task StaticWriteTagAsync(XmlWriter writer, AtomLink obj, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
+    public static async Task WriteTagAsync(XmlWriter writer, AtomLink obj, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
     {
         options ??= KmlWriteOptions.Default;
         string prefix = "";
@@ -58,7 +55,7 @@ internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
         if (obj == null)
             return;
 
-        await writer.WriteStartElementAsync(prefix, StaticTag, Namespaces.Atom).ConfigureAwait(false);
+        await writer.WriteStartElementAsync(prefix, Tag, Namespaces.Atom).ConfigureAwait(false);
         await writer.WriteAttributeStringAsync(prefix, "href", Namespaces.Atom, obj.Href?.ToString() ?? "").ConfigureAwait(false);
         if (obj.Rel != null)
             await writer.WriteAttributeStringAsync(prefix, "rel", Namespaces.Atom, obj.Rel).ConfigureAwait(false);
@@ -73,9 +70,12 @@ internal sealed class AtomLinkSerializer : SerializationHelper<AtomLink>
         await writer.WriteEndElementAsync().ConfigureAwait(false);
     }
 
-    public override Task<AtomLink> ReadTagAsync(XmlReader reader, CancellationToken ct = default) 
-        => StaticReadTagAsync(reader, ct);
+    Task ISerializationHelper<AtomLink>.WriteTagAsync(XmlWriter writer, AtomLink o, XmlNamespaceManager? ns, KmlWriteOptions? options, CancellationToken ct)
+        => WriteTagAsync(writer, o, ns, options, ct);
 
-    public override Task WriteTagAsync(XmlWriter writer, AtomLink o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default) 
-        => StaticWriteTagAsync(writer, o, ns, options, ct);
+    Task<AtomLink> ISerializationHelper<AtomLink>.ReadTagAsync(XmlReader reader, CancellationToken ct)
+        => ReadTagAsync(reader, ct);
+
+    string ISerializationHelper<AtomLink>.Tag => Tag;
+    string ISerializationHelper<AtomLink>.Namespace => Namespace;
 }

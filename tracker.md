@@ -1,5 +1,5 @@
 | Element                   | DTO  | Serializer | Unit Test |
-|---------------------------| ---: | ---------: | --------: |
+|:--------------------------|-----:|-----------:|----------:|
 | atom:author               | done | done       | done      |
 | atom:link                 | done | done       | done      |
 | kml:AbstractColorStyle    | done |            | N/A       |

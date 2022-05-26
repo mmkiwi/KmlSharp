@@ -24,11 +24,13 @@ public static partial class KmlSerializer
 
     private static void AddSerializer<TObject, THelper>()
         where THelper : ISerializationHelper<TObject>, new()
+        where TObject : class
     {
         Serializers.Add(typeof(TObject), new(() => new THelper()));
     }
 
     public static async Task SerializeAsync<T>(T obj, XmlWriter writer, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null)
+    where T : class
     {
         ISerializationHelper<T>? serializationHelper = GetSerializer<T>();
         if (serializationHelper == null)
@@ -39,6 +41,7 @@ public static partial class KmlSerializer
     }
 
     public static async Task<T?> DeserializeAsync<T>(XmlReader reader)
+    where T : class
     {
         ISerializationHelper<T>? serializationHelper = GetSerializer<T>();
         return serializationHelper != null
@@ -47,6 +50,7 @@ public static partial class KmlSerializer
     }
 
     private static ISerializationHelper<T>? GetSerializer<T>()
+    where T : class
     {
         return Serializers.ContainsKey(typeof(T)) ? Serializers[typeof(T)].Value as ISerializationHelper<T> : null;
     }

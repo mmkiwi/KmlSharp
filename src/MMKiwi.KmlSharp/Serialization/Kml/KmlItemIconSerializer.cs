@@ -7,17 +7,15 @@ using System.Globalization;
 using MMKiwi.KmlSharp.Kml;
 
 namespace MMKiwi.KmlSharp.Serialization.Kml;
-internal class KmlItemIconSerializer : SerializationHelper<KmlItemIcon>
+internal class KmlItemIconSerializer : ISerializationHelper<KmlItemIcon>
 #if NET7_0_OR_GREATER
     , ISerializationHelperStatic<KmlItemIcon>
 #endif
 {
-    protected override string Namespace => StaticNamespace;
-    public static string StaticNamespace => Namespaces.Kml;
-    protected override string Tag => StaticTag;
-    public static string StaticTag => "ItemIcon";
+    public static string Namespace => Namespaces.Kml;
+    public static string Tag => "ItemIcon";
 
-    public static async Task<KmlItemIcon> StaticReadTagAsync(XmlReader reader, CancellationToken ct = default)
+    public static async Task<KmlItemIcon> ReadTagAsync(XmlReader reader, CancellationToken ct = default)
     {
         _ = reader.MoveToElement();
 
@@ -26,8 +24,8 @@ internal class KmlItemIconSerializer : SerializationHelper<KmlItemIcon>
         HashSet<string> alreadyLoadedAtt = new();
         while (reader.MoveToNextAttribute())
         {
-            if(!await KmlAbstractObjectSerializer.ReadAbstractAttributesAsync(reader, o, alreadyLoadedAtt, ct).ConfigureAwait(false))
-            KmlAbstractObjectSerializer.LoadUnknownAttribueAsync(reader, o);
+            if (!await KmlAbstractObjectSerializer.ReadAbstractAttributesAsync(reader, o, alreadyLoadedAtt, ct).ConfigureAwait(false))
+                KmlAbstractObjectSerializer.LoadUnknownAttribueAsync(reader, o);
         }
 
         HashSet<string> alreadyLoaded = new();
@@ -55,14 +53,14 @@ internal class KmlItemIconSerializer : SerializationHelper<KmlItemIcon>
         return o;
     }
 
-    public static async Task StaticWriteTagAsync(XmlWriter writer, KmlItemIcon o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
+    public static async Task WriteTagAsync(XmlWriter writer, KmlItemIcon o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
     {
         options ??= KmlWriteOptions.Default;
         string? prefix = ns?.LookupPrefix(Namespaces.Kml) ?? "";
         if (o == null)
             return;
 
-        await writer.WriteStartElementAsync(prefix, StaticTag, Namespaces.Kml).ConfigureAwait(false);
+        await writer.WriteStartElementAsync(prefix, Tag, Namespaces.Kml).ConfigureAwait(false);
         await KmlAbstractObjectSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns, ct).ConfigureAwait(false);
         if (o.State != KmlState.Default || options.EmitValuesWhenDefault)
             await writer.WriteElementStringAsync(prefix, "state", Namespaces.Kml, o.State.ToString()).ConfigureAwait(false);
@@ -72,9 +70,12 @@ internal class KmlItemIconSerializer : SerializationHelper<KmlItemIcon>
         await writer.WriteEndElementAsync().ConfigureAwait(false);
     }
 
-    public override Task WriteTagAsync(XmlWriter writer, KmlItemIcon o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
-        => StaticWriteTagAsync(writer, o, ns, options, ct);
+    Task ISerializationHelper<KmlItemIcon>.WriteTagAsync(XmlWriter writer, KmlItemIcon o, XmlNamespaceManager? ns, KmlWriteOptions? options, CancellationToken ct)
+        => WriteTagAsync(writer, o, ns, options, ct);
 
-    public override Task<KmlItemIcon> ReadTagAsync(XmlReader reader, CancellationToken ct = default)
-        => StaticReadTagAsync(reader, ct);
+    Task<KmlItemIcon> ISerializationHelper<KmlItemIcon>.ReadTagAsync(XmlReader reader, CancellationToken ct)
+        => ReadTagAsync(reader, ct);
+
+    string ISerializationHelper<KmlItemIcon>.Tag => Tag;
+    string ISerializationHelper<KmlItemIcon>.Namespace => Namespace;
 }

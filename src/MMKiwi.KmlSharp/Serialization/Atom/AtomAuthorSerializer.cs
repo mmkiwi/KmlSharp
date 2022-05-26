@@ -6,19 +6,16 @@ using MMKiwi.KmlSharp.Atom;
 
 namespace MMKiwi.KmlSharp.Serialization.Atom;
 
-internal class AtomAuthorSerializer : SerializationHelper<AtomAuthor>
+internal class AtomAuthorSerializer : ISerializationHelper<AtomAuthor>
 #if NET7_0_OR_GREATER
     , ISerializationHelperStatic<AtomAuthor>
 #endif
 {
-    protected override string Tag => StaticTag;
-    public static string StaticTag => "author";
 
-    protected override string Namespace => StaticNamespace;
-    public static string StaticNamespace => Namespaces.Atom;
-    
+    public static string Tag => "author";
+    public static string Namespace => Namespaces.Atom;
 
-    public static async Task<AtomAuthor> StaticReadTagAsync(XmlReader reader, CancellationToken ct = default)
+    public static async Task<AtomAuthor> ReadTagAsync(XmlReader reader, CancellationToken ct = default)
     {
         _ = reader.MoveToElement();
         if (reader.IsEmptyElement)
@@ -47,13 +44,13 @@ internal class AtomAuthorSerializer : SerializationHelper<AtomAuthor>
         return o;
     }
 
-    public static async Task StaticWriteTagAsync(XmlWriter writer, AtomAuthor obj, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
+    public static async Task WriteTagAsync(XmlWriter writer, AtomAuthor obj, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
     {
         string? prefix = ns?.LookupPrefix(Namespaces.Atom) ?? "";
         if (obj == null)
             return;
 
-        await writer.WriteStartElementAsync(prefix, StaticTag, Namespaces.Atom).ConfigureAwait(false);
+        await writer.WriteStartElementAsync(prefix, Tag, Namespaces.Atom).ConfigureAwait(false);
         await writer.WriteElementStringAsync(prefix, "name", Namespaces.Atom, obj.Name).ConfigureAwait(false);
         if (obj.Email != null)
             await writer.WriteElementStringAsync(prefix, "email", Namespaces.Atom, obj.Email).ConfigureAwait(false);
@@ -62,13 +59,13 @@ internal class AtomAuthorSerializer : SerializationHelper<AtomAuthor>
         await writer.WriteEndElementAsync().ConfigureAwait(false);
     }
 
-    public override Task<AtomAuthor> ReadTagAsync(XmlReader reader, CancellationToken ct = default)
-    {
-        return StaticReadTagAsync(reader, ct);
-    }
+    Task ISerializationHelper<AtomAuthor>.WriteTagAsync(XmlWriter writer, AtomAuthor o, XmlNamespaceManager? ns, KmlWriteOptions? options, CancellationToken ct)
+        => WriteTagAsync(writer, o, ns, options, ct);
 
-    public override Task WriteTagAsync(XmlWriter writer, AtomAuthor o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
-    {
-        return StaticWriteTagAsync(writer, o, ns, options, ct);
-    }
+    Task<AtomAuthor> ISerializationHelper<AtomAuthor>.ReadTagAsync(XmlReader reader, CancellationToken ct)
+        => ReadTagAsync(reader, ct);
+
+    string ISerializationHelper<AtomAuthor>.Tag => Tag;
+    string ISerializationHelper<AtomAuthor>.Namespace => Namespace;
+
 }

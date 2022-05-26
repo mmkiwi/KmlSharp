@@ -7,14 +7,15 @@ using System.Globalization;
 using MMKiwi.KmlSharp.Kml;
 
 namespace MMKiwi.KmlSharp.Serialization.Kml;
-internal class KmlLineStyleSerializer : SerializationHelper<KmlLineStyle>
+internal class KmlLineStyleSerializer : ISerializationHelper<KmlLineStyle>
+#if NET7_0_OR_GREATER
+    , ISerializationHelperStatic<KmlLineStyle>
+#endif
 {
-    protected override string Namespace => StaticNamespace;
-    public static string StaticNamespace => Namespaces.Kml;
-    protected override string Tag => StaticTag;
-    public static string StaticTag => "LineStyle";
+    public static string Namespace => Namespaces.Kml;
+    public static string Tag => "LineStyle";
 
-    public static async Task<KmlLineStyle> StaticReadTagAsync(XmlReader reader, CancellationToken ct = default)
+    public static async Task<KmlLineStyle> ReadTagAsync(XmlReader reader, CancellationToken ct = default)
     {
         _ = reader.MoveToElement();
 
@@ -47,14 +48,14 @@ internal class KmlLineStyleSerializer : SerializationHelper<KmlLineStyle>
         return o;
     }
 
-    public static async Task StaticWriteTagAsync(XmlWriter writer, KmlLineStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
+    public static async Task WriteTagAsync(XmlWriter writer, KmlLineStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
     {
         options ??= KmlWriteOptions.Default;
         string? prefix = ns?.LookupPrefix(Namespaces.Kml) ?? "";
         if (o == null)
             return;
 
-        await writer.WriteStartElementAsync(prefix, StaticTag, Namespaces.Kml).ConfigureAwait(false);
+        await writer.WriteStartElementAsync(prefix, Tag, Namespaces.Kml).ConfigureAwait(false);
         await KmlAbstractColorSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns, ct).ConfigureAwait(false);
         if (o.Width != 1 || options.EmitValuesWhenDefault)
             await writer.WriteElementStringAsync(prefix, "width", Namespaces.Kml, o.Width.ToString(CultureInfo.InvariantCulture)).ConfigureAwait(false);
@@ -62,9 +63,12 @@ internal class KmlLineStyleSerializer : SerializationHelper<KmlLineStyle>
         await writer.WriteEndElementAsync().ConfigureAwait(false);
     }
 
-    public override Task WriteTagAsync(XmlWriter writer, KmlLineStyle o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
-        => StaticWriteTagAsync(writer, o, ns, options, ct);
+    Task ISerializationHelper<KmlLineStyle>.WriteTagAsync(XmlWriter writer, KmlLineStyle o, XmlNamespaceManager? ns, KmlWriteOptions? options, CancellationToken ct)
+        => WriteTagAsync(writer, o, ns, options, ct);
 
-    public override Task<KmlLineStyle> ReadTagAsync(XmlReader reader, CancellationToken ct = default)
-        => StaticReadTagAsync(reader, ct);
+    Task<KmlLineStyle> ISerializationHelper<KmlLineStyle>.ReadTagAsync(XmlReader reader, CancellationToken ct)
+        => ReadTagAsync(reader, ct);
+
+    string ISerializationHelper<KmlLineStyle>.Tag => Tag;
+    string ISerializationHelper<KmlLineStyle>.Namespace => Namespace;
 }

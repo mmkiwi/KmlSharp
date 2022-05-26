@@ -12,6 +12,7 @@ internal static class Helpers
 {
 
     public static async Task<T?> Deserialize<T>(this string input)
+    where T : class
     {
         using StringReader str = new(input);
         using XmlReader? reader = XmlReader.Create(str, new XmlReaderSettings()
@@ -22,6 +23,7 @@ internal static class Helpers
     }
 
     public static async Task<XDocument> ToXDocument<T>(this T input, KmlWriteOptions? options = null)
+    where T : class
     {
         options ??= KmlWriteOptions.Default;
         XmlNamespaceManager? ns = new(new NameTable());

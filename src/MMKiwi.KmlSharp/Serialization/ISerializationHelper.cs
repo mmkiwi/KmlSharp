@@ -5,19 +5,44 @@
 namespace MMKiwi.KmlSharp.Serialization;
 
 internal interface ISerializationHelper<T>
+where T : class
 {
-    Task WriteRootTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default);
+    string Namespace { get; }
+    string Tag { get; }
+    async Task WriteRootTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
+
+    {
+        string? prefix = ns?.LookupPrefix(Namespace) ?? "";
+        writer.WriteStartDocument();
+        if (o == null)
+            await Helpers.WriteEmptyElementAsync(writer, prefix, Tag, Namespace).ConfigureAwait(false);
+        else
+            await WriteTagAsync(writer, o, ns, options, ct).ConfigureAwait(false);
+
+    }
     Task WriteTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default);
     Task<T> ReadTagAsync(XmlReader reader, CancellationToken ct = default);
-    Task<T?> ReadRootTagAsync(XmlReader reader, CancellationToken ct = default);
+    async Task<T?> ReadRootTagAsync(XmlReader reader, CancellationToken ct = default)
+    {
+        T? o = null;
+        if (reader.MoveToContent() == System.Xml.XmlNodeType.Element)
+        {
+            o = reader.LocalName == Tag && reader.NamespaceURI == Namespace
+                ? await ReadTagAsync(reader, ct).ConfigureAwait(false)
+                : throw new ArgumentException($"Tag {reader.LocalName} was not expected");
+        }
+        return o;
+    }
 }
+
 #if NET7_0_OR_GREATER
-internal interface ISerializationHelperStatic<T>
+internal interface ISerializationHelperStatic<T> : ISerializationHelper<T>
+where T : class
 {
-    static abstract string StaticNamespace { get; }
-    static abstract string StaticTag { get; }
-    static abstract Task StaticWriteTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default);
-    static abstract Task<T> StaticReadTagAsync(XmlReader reader, CancellationToken ct = default);
+    static new abstract string Namespace { get; }
+    static new abstract string Tag { get; }
+    static new abstract Task WriteTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default);
+    static new abstract Task<T> ReadTagAsync(XmlReader reader, CancellationToken ct = default);
 }
 #endif
 

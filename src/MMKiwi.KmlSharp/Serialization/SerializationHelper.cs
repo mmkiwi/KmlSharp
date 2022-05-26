@@ -9,35 +9,6 @@ using System.Text.RegularExpressions;
 
 namespace MMKiwi.KmlSharp.Serialization;
 
-internal abstract class SerializationHelper<T> : ISerializationHelper<T> where T : class
-{
-    protected virtual bool PrefixAttributes => false;
-    protected abstract string Tag { get; }
-    protected abstract string Namespace { get; }
-    public virtual async Task<T?> ReadRootTagAsync(XmlReader reader, CancellationToken ct = default)
-    {
-        T? o = null;
-        if (reader.MoveToContent() == System.Xml.XmlNodeType.Element)
-        {
-            o = reader.LocalName == Tag && reader.NamespaceURI == Namespace
-                ? await ReadTagAsync(reader, ct).ConfigureAwait(false)
-                : throw new ArgumentException($"Tag {reader.LocalName} was not expected");
-        }
-        return o;
-    }
-    public abstract Task<T> ReadTagAsync(XmlReader reader, CancellationToken ct = default);
-    public virtual async Task WriteRootTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
-    {
-        string? prefix = ns?.LookupPrefix(Namespace) ?? "";
-        writer.WriteStartDocument();
-        if (o == null)
-            await Helpers.WriteEmptyElementAsync(writer, prefix, Tag, Namespace).ConfigureAwait(false);
-        else
-            await WriteTagAsync(writer, o, ns, options, ct).ConfigureAwait(false);
-    }
-    public abstract Task WriteTagAsync(XmlWriter writer, T o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default);
-}
-
 internal static partial class Helpers
 {
     public static bool CheckElementName(XmlReader reader, string name, string ns, HashSet<string> alreadySet)
@@ -77,13 +48,13 @@ internal static partial class Helpers
         return XmlConvert.ToBoolean(res);
     }
 
-const string hexColorRegex = @"^\s*(?<alpha>[a-zA-Z0-9]{2})?\s*(?<blue>[a-zA-Z0-9]{2})\s*(?<green>[a-zA-Z0-9]{2})\s*(?<red>[a-zA-Z0-9]{2})$";
+const string _hexColorRegex = @"^\s*(?<alpha>[a-zA-Z0-9]{2})?\s*(?<blue>[a-zA-Z0-9]{2})\s*(?<green>[a-zA-Z0-9]{2})\s*(?<red>[a-zA-Z0-9]{2})$";
 
 #if NET7_0_OR_GREATER
-    [RegexGenerator(hexColorRegex)]
+    [RegexGenerator(_hexColorRegex)]
     private static partial Regex HexColorRegex();
 #else 
-    private static Regex HexColorRegex() => new(hexColorRegex, RegexOptions.CultureInvariant);
+    private static Regex HexColorRegex() => new(_hexColorRegex, RegexOptions.CultureInvariant);
 #endif
 
     public static async Task<Color> ReadElementColorAsync(XmlReader reader, HashSet<string> alreadySet)
@@ -92,11 +63,9 @@ const string hexColorRegex = @"^\s*(?<alpha>[a-zA-Z0-9]{2})?\s*(?<blue>[a-zA-Z0-
 
         string colorStr = await reader.ReadElementContentAsStringAsync().ConfigureAwait(false);
         Match? matches = HexColorRegex().Match(colorStr);
-        if (matches is null)
-            throw new FormatException($"Could not parse color {colorStr}");
-
-
-        return Color.FromArgb(alpha: matches.Groups["alpha"].ParseByteStr(colorStr),
+        return matches is null
+            ? throw new FormatException($"Could not parse color {colorStr}")
+            : Color.FromArgb(alpha: matches.Groups["alpha"].ParseByteStr(colorStr),
                                 blue: matches.Groups["blue"].ParseByteStr(colorStr),
                                 green: matches.Groups["green"].ParseByteStr(colorStr),
                                 red: matches.Groups["red"].ParseByteStr(colorStr));

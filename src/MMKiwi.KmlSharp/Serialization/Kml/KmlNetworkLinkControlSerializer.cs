@@ -5,18 +5,15 @@
 using MMKiwi.KmlSharp.Kml;
 
 namespace MMKiwi.KmlSharp.Serialization.Kml;
-internal class KmlNetworkLinkControlSerializer : SerializationHelper<KmlNetworkLinkControl>
+internal class KmlNetworkLinkControlSerializer : ISerializationHelper<KmlNetworkLinkControl>
 #if NET7_0_OR_GREATER
     , ISerializationHelperStatic<KmlNetworkLinkControl>
 #endif
 {
-    protected override string Namespace => StaticNamespace;
-    public static string StaticNamespace => Namespaces.Kml;
-    protected override string Tag => StaticTag;
+    public static string Namespace => Namespaces.Kml;
+    public static string Tag => "NetworkLinkControlSerializer";
 
-    public static string StaticTag => "NetworkLinkControlSerializer";
-
-    public static async Task<KmlNetworkLinkControl> StaticReadTagAsync(XmlReader reader, CancellationToken ct = default)
+    public static async Task<KmlNetworkLinkControl> ReadTagAsync(XmlReader reader, CancellationToken ct = default)
     {
         _ = reader.MoveToElement();
         if (reader.IsEmptyElement)
@@ -72,18 +69,17 @@ internal class KmlNetworkLinkControlSerializer : SerializationHelper<KmlNetworkL
         return o;
     }
 
-    public static Task StaticWriteTagAsync(XmlWriter writer, KmlNetworkLinkControl o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
+    public static Task WriteTagAsync(XmlWriter writer, KmlNetworkLinkControl o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public override Task<KmlNetworkLinkControl> ReadTagAsync(XmlReader reader, CancellationToken ct = default)
-    {
-        return StaticReadTagAsync(reader, ct);
-    }
+    Task ISerializationHelper<KmlNetworkLinkControl>.WriteTagAsync(XmlWriter writer, KmlNetworkLinkControl o, XmlNamespaceManager? ns, KmlWriteOptions? options, CancellationToken ct)
+        => WriteTagAsync(writer, o, ns, options, ct);
 
-    public override Task WriteTagAsync(XmlWriter writer, KmlNetworkLinkControl o, XmlNamespaceManager? ns = null, KmlWriteOptions? options = null, CancellationToken ct = default)
-    {
-        return StaticWriteTagAsync(writer, o, ns, options, ct);
-    }
+    Task<KmlNetworkLinkControl> ISerializationHelper<KmlNetworkLinkControl>.ReadTagAsync(XmlReader reader, CancellationToken ct)
+        => ReadTagAsync(reader, ct);
+
+    string ISerializationHelper<KmlNetworkLinkControl>.Tag => Tag;
+    string ISerializationHelper<KmlNetworkLinkControl>.Namespace => Namespace;
 }

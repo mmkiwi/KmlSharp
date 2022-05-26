@@ -4,16 +4,15 @@
 
 using System.Drawing;
 
-using KmlColorMode = MMKiwi.KmlSharp.Kml.KmlColorMode;
+using MMKiwi.KmlSharp.Kml;
 
-using KmlObj = MMKiwi.KmlSharp.Kml.KmlAbstractColorStyle;
 namespace MMKiwi.KmlSharp.Serialization.Kml;
-internal class KmlAbstractColorSerializer : IAbstractSerializationHelper<KmlObj>
+internal class KmlAbstractColorSerializer : IAbstractSerializationHelper<KmlAbstractColorStyle>
 #if NET7_0_OR_GREATER
-, IAbstractSerializationHelperStatic<KmlObj>
+, IAbstractSerializationHelperStatic<KmlAbstractColorStyle>
 #endif
 {
-    public static async Task<bool> ReadAbstractElementsAsync(XmlReader reader, KmlObj o, HashSet<string> alreadyLoaded, CancellationToken ct = default)
+    public static async Task<bool> ReadAbstractElementsAsync(XmlReader reader, KmlAbstractColorStyle o, HashSet<string> alreadyLoaded, CancellationToken ct = default)
     {
         if (Helpers.CheckElementName(reader, "color", Namespaces.Kml, alreadyLoaded))
             o.Color = await Helpers.ReadElementColorAsync(reader, alreadyLoaded)
@@ -27,7 +26,7 @@ internal class KmlAbstractColorSerializer : IAbstractSerializationHelper<KmlObj>
         return true;
     }
 
-    public static async Task WriteAbstractElementsAsync(XmlWriter writer, KmlObj o, KmlWriteOptions options,
+    public static async Task WriteAbstractElementsAsync(XmlWriter writer, KmlAbstractColorStyle o, KmlWriteOptions options,
         XmlNamespaceManager? ns = null, CancellationToken ct = default)
     {
         string? prefix = ns?.LookupPrefix(Namespaces.Kml) ?? "";
@@ -40,18 +39,18 @@ internal class KmlAbstractColorSerializer : IAbstractSerializationHelper<KmlObj>
         await KmlAbstractSubStyleSerializer.WriteAbstractElementsAsync(writer, o, options, ns, ct).ConfigureAwait(false);
     }
 
-    public static Task<bool> ReadAbstractAttributesAsync(XmlReader reader, KmlObj o, HashSet<string> alreadyLoaded, CancellationToken ct = default) 
+    public static Task<bool> ReadAbstractAttributesAsync(XmlReader reader, KmlAbstractColorStyle o, HashSet<string> alreadyLoaded, CancellationToken ct = default) 
         => KmlAbstractSubStyleSerializer.ReadAbstractAttributesAsync(reader, o, alreadyLoaded, ct);
 
-    public static Task WriteAbstractAttributesAsync(XmlWriter writer, KmlObj o, string prefix, KmlWriteOptions options, XmlNamespaceManager? ns = null, CancellationToken ct = default)
+    public static Task WriteAbstractAttributesAsync(XmlWriter writer, KmlAbstractColorStyle o, string prefix, KmlWriteOptions options, XmlNamespaceManager? ns = null, CancellationToken ct = default)
         => KmlAbstractSubStyleSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns, ct);
 
-    Task IAbstractSerializationHelper<KmlObj>.WriteAbstractAttributesAsync(XmlWriter writer, KmlObj o, string prefix, KmlWriteOptions options, XmlNamespaceManager? ns, CancellationToken ct)
+    Task IAbstractSerializationHelper<KmlAbstractColorStyle>.WriteAbstractAttributesAsync(XmlWriter writer, KmlAbstractColorStyle o, string prefix, KmlWriteOptions options, XmlNamespaceManager? ns, CancellationToken ct)
         => WriteAbstractAttributesAsync(writer, o, prefix, options, ns, ct);
-    Task IAbstractSerializationHelper<KmlObj>.WriteAbstractElementsAsync(XmlWriter writer, KmlObj o, KmlWriteOptions options, XmlNamespaceManager? ns, CancellationToken ct)
+    Task IAbstractSerializationHelper<KmlAbstractColorStyle>.WriteAbstractElementsAsync(XmlWriter writer, KmlAbstractColorStyle o, KmlWriteOptions options, XmlNamespaceManager? ns, CancellationToken ct)
         => WriteAbstractElementsAsync(writer, o, options, ns, ct);
-    Task<bool> IAbstractSerializationHelper<KmlObj>.ReadAbstractAttributesAsync(XmlReader reader, KmlObj o, HashSet<string> alreadyLoaded, CancellationToken ct)
+    Task<bool> IAbstractSerializationHelper<KmlAbstractColorStyle>.ReadAbstractAttributesAsync(XmlReader reader, KmlAbstractColorStyle o, HashSet<string> alreadyLoaded, CancellationToken ct)
         => ReadAbstractAttributesAsync(reader, o, alreadyLoaded, ct);
-    Task<bool> IAbstractSerializationHelper<KmlObj>.ReadAbstractElementsAsync(XmlReader reader, KmlObj o, HashSet<string> alreadyLoaded, CancellationToken ct)
+    Task<bool> IAbstractSerializationHelper<KmlAbstractColorStyle>.ReadAbstractElementsAsync(XmlReader reader, KmlAbstractColorStyle o, HashSet<string> alreadyLoaded, CancellationToken ct)
         => ReadAbstractElementsAsync(reader, o, alreadyLoaded, ct);
 }
