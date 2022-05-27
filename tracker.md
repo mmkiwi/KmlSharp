@@ -64,7 +64,7 @@
 | kml:Region                | done |            |           |
 | kml:ResourceMap           | done |            |           |
 | kml:Root                  | done |            |           |
-| kml:Scale                 | done |            |           |
+| kml:Scale                 | done | done       | done      |
 | kml:ScreenOverlay         | done |            |           |
 | kml:SeaFloorAltitudeMode  | done |            |           |
 | kml:SoundCue              | done |            |           |

@@ -20,6 +20,7 @@ public static partial class KmlSerializer
         AddSerializer<KmlObj.KmlPolyStyle, Kml.KmlPolyStyleSerializer>();
         AddSerializer<KmlObj.KmlItemIcon, Kml.KmlItemIconSerializer>();
         AddSerializer<KmlObj.KmlListStyle, Kml.KmlListStyleSerializer>();
+        AddSerializer<KmlObj.KmlScale, Kml.KmlScaleSerializer>();
     }
 
     private static void AddSerializer<TObject, THelper>()
