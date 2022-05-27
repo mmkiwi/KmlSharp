@@ -15,7 +15,7 @@ where T : class
         string? prefix = ns?.LookupPrefix(Namespace) ?? "";
         writer.WriteStartDocument();
         if (o == null)
-            await Helpers.WriteEmptyElementAsync(writer, prefix, Tag, Namespace).ConfigureAwait(false);
+            await HelpExtensions.WriteEmptyElementAsync(writer, prefix, Tag, Namespace).ConfigureAwait(false);
         else
             await WriteTagAsync(writer, o, ns, options, ct).ConfigureAwait(false);
 

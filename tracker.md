@@ -46,7 +46,7 @@
 | kml:ListItemType          | done |            |           |
 | kml:ListStyle             | done | done       | done      |
 | kml:Location              | done |            |           |
-| kml:Lod                   | done |            |           |
+| kml:Lod                   | done | done       | done      |
 | kml:Model                 | done |            |           |
 | kml:MultiGeometry         | done |            |           |
 | kml:MultiTrack            | done |            |           |

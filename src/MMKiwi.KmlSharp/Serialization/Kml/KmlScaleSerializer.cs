@@ -35,12 +35,12 @@ internal class KmlScaleSerializer : ISerializationHelper<KmlScale>
             ct.ThrowIfCancellationRequested();
             if (reader.NodeType == XmlNodeType.Element)
             {
-                if (Helpers.CheckElementName(reader, "x", Namespaces.Kml, alreadyLoaded))
-                    o.X = await Helpers.ReadElementDoubleAsync(reader, alreadyLoaded).ConfigureAwait(false);
-                else if (Helpers.CheckElementName(reader, "y", Namespaces.Kml, alreadyLoaded))
-                    o.Y = await Helpers.ReadElementDoubleAsync(reader, alreadyLoaded).ConfigureAwait(false);
-                else if (Helpers.CheckElementName(reader, "z", Namespaces.Kml, alreadyLoaded))
-                    o.Z = await Helpers.ReadElementDoubleAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                if (HelpExtensions.CheckElementName(reader, "x", Namespaces.Kml, alreadyLoaded))
+                    o.X = await HelpExtensions.ReadElementDoubleAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                else if (HelpExtensions.CheckElementName(reader, "y", Namespaces.Kml, alreadyLoaded))
+                    o.Y = await HelpExtensions.ReadElementDoubleAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                else if (HelpExtensions.CheckElementName(reader, "z", Namespaces.Kml, alreadyLoaded))
+                    o.Z = await HelpExtensions.ReadElementDoubleAsync(reader, alreadyLoaded).ConfigureAwait(false);
                 else if (!await KmlAbstractObjectSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt, ct).ConfigureAwait(false))
                 {
                     await KmlAbstractObjectSerializer.LoadUnknownElementAsync(reader, o, ct).ConfigureAwait(false);
@@ -62,11 +62,11 @@ internal class KmlScaleSerializer : ISerializationHelper<KmlScale>
         await writer.WriteStartElementAsync(prefix, Tag, Namespaces.Kml).ConfigureAwait(false);
         await KmlAbstractObjectSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns, ct).ConfigureAwait(false);
         if (o.X != 1 || options.EmitValuesWhenDefault)
-            await writer.WriteElementStringAsync(prefix, "x", Namespaces.Kml, o.X.ToString(CultureInfo.InvariantCulture)).ConfigureAwait(false);
+            await writer.WriteElementDoubleAsync(prefix, "x", Namespaces.Kml, o.X).ConfigureAwait(false);
         if (o.Y != 1 || options.EmitValuesWhenDefault)
-            await writer.WriteElementStringAsync(prefix, "y", Namespaces.Kml, o.Y.ToString(CultureInfo.InvariantCulture)).ConfigureAwait(false);
+            await writer.WriteElementDoubleAsync(prefix, "y", Namespaces.Kml, o.Y).ConfigureAwait(false);
         if (o.Z != 1 || options.EmitValuesWhenDefault)
-            await writer.WriteElementStringAsync(prefix, "z", Namespaces.Kml, o.Z.ToString(CultureInfo.InvariantCulture)).ConfigureAwait(false);
+            await writer.WriteElementDoubleAsync(prefix, "z", Namespaces.Kml, o.Z).ConfigureAwait(false);
         await KmlAbstractObjectSerializer.WriteAbstractElementsAsync(writer, o, options, ns, ct).ConfigureAwait(false);
         await writer.WriteEndElementAsync().ConfigureAwait(false);
     }

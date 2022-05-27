@@ -35,8 +35,8 @@ internal class KmlLabelStyleSerializer : ISerializationHelper<KmlLabelStyle>
             ct.ThrowIfCancellationRequested();
             if (reader.NodeType == XmlNodeType.Element)
             {
-                if (Helpers.CheckElementName(reader, "scale", Namespaces.Kml, alreadyLoaded))
-                    o.Scale = await Helpers.ReadElementDoubleAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                if (HelpExtensions.CheckElementName(reader, "scale", Namespaces.Kml, alreadyLoaded))
+                    o.Scale = await HelpExtensions.ReadElementDoubleAsync(reader, alreadyLoaded).ConfigureAwait(false);
                 else if (!await KmlAbstractColorSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt, ct).ConfigureAwait(false))
                 {
                     await KmlAbstractObjectSerializer.LoadUnknownElementAsync(reader, o, ct).ConfigureAwait(false);
@@ -58,7 +58,7 @@ internal class KmlLabelStyleSerializer : ISerializationHelper<KmlLabelStyle>
         await writer.WriteStartElementAsync(prefix, Tag, Namespaces.Kml).ConfigureAwait(false);
         await KmlAbstractColorSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns, ct).ConfigureAwait(false);
         if (o.Scale != 1 || options.EmitValuesWhenDefault)
-            await writer.WriteElementStringAsync(prefix, "scale", Namespaces.Kml, o.Scale.ToString(CultureInfo.InvariantCulture)).ConfigureAwait(false);
+            await writer.WriteElementDoubleAsync(prefix, "scale", Namespaces.Kml, o.Scale).ConfigureAwait(false);
         await KmlAbstractColorSerializer.WriteAbstractElementsAsync(writer, o, options, ns, ct).ConfigureAwait(false);
         await writer.WriteEndElementAsync().ConfigureAwait(false);
     }

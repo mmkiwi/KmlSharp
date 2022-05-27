@@ -39,13 +39,13 @@ internal class KmlListStyleSerializer : ISerializationHelper<KmlListStyle>
                 throw new StackOverflowException();
             if (reader.NodeType == XmlNodeType.Element)
             {
-                if (Helpers.CheckElementName(reader, "maxSnippetLines", Namespaces.Kml, alreadyLoaded))
-                    o.MaxSnippetLines = await Helpers.ReadElementIntAsync(reader, alreadyLoaded).ConfigureAwait(false);
-                else if (Helpers.CheckElementName(reader, "listItemType", Namespaces.Kml, alreadyLoaded))
-                    o.ListItemType = await Helpers.ReadElementEnumAsync<KmlListItemType>(reader, alreadyLoaded).ConfigureAwait(false);
-                else if (Helpers.CheckElementName(reader, "bgColor", Namespaces.Kml, alreadyLoaded))
-                    o.BgColor = await Helpers.ReadElementColorAsync(reader, alreadyLoaded).ConfigureAwait(false);
-                else if (Helpers.CheckElementName(reader, "ItemIcon", Namespaces.Kml, alreadyLoaded))
+                if (HelpExtensions.CheckElementName(reader, "maxSnippetLines", Namespaces.Kml, alreadyLoaded))
+                    o.MaxSnippetLines = await HelpExtensions.ReadElementIntAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                else if (HelpExtensions.CheckElementName(reader, "listItemType", Namespaces.Kml, alreadyLoaded))
+                    o.ListItemType = await HelpExtensions.ReadElementEnumAsync<KmlListItemType>(reader, alreadyLoaded).ConfigureAwait(false);
+                else if (HelpExtensions.CheckElementName(reader, "bgColor", Namespaces.Kml, alreadyLoaded))
+                    o.BgColor = await HelpExtensions.ReadElementColorAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                else if (HelpExtensions.CheckElementName(reader, "ItemIcon", Namespaces.Kml, alreadyLoaded))
                     o.ItemIcons.Add(await KmlItemIconSerializer.ReadTagAsync(reader, ct).ConfigureAwait(false));
                 else if (!await KmlAbstractColorSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt, ct).ConfigureAwait(false))
                 {
@@ -68,7 +68,7 @@ internal class KmlListStyleSerializer : ISerializationHelper<KmlListStyle>
         await writer.WriteStartElementAsync(prefix, Tag, Namespaces.Kml).ConfigureAwait(false);
         await KmlAbstractColorSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns, ct).ConfigureAwait(false);
         if (o.MaxSnippetLines != 2 || options.EmitValuesWhenDefault)
-            await writer.WriteElementStringAsync(prefix, "maxSnippetLines", Namespaces.Kml, o.MaxSnippetLines.ToString(CultureInfo.InvariantCulture)).ConfigureAwait(false);
+            await writer.WriteElementDoubleAsync(prefix, "maxSnippetLines", Namespaces.Kml, o.MaxSnippetLines).ConfigureAwait(false);
         if (o.ListItemType != KmlListItemType.Check || options.EmitValuesWhenDefault)
             await writer.WriteElementStringAsync(prefix, "listItemType", Namespaces.Kml, o.ListItemType.ToKmlString()).ConfigureAwait(false);
         if (o.BgColor != Color.White || options.EmitValuesWhenDefault)

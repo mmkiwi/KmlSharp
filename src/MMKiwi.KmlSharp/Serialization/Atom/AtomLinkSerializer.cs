@@ -23,18 +23,18 @@ internal sealed class AtomLinkSerializer : ISerializationHelper<AtomLink>
         HashSet<string> alreadyLoaded = new();
         while (reader.MoveToNextAttribute())
         {
-            if (Helpers.CheckAttributeName(reader, "href", Namespaces.Atom, alreadyLoaded))
-                o.Href = new(await Helpers.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false));
-            else if (Helpers.CheckAttributeName(reader, "rel", Namespaces.Atom, alreadyLoaded))
-                o.Rel = await Helpers.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false);
-            else if (Helpers.CheckAttributeName(reader, "type", Namespaces.Atom, alreadyLoaded))
-                o.Type = await Helpers.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false);
-            else if (Helpers.CheckAttributeName(reader, "hreflang", Namespaces.Atom, alreadyLoaded))
-                o.HrefLang = await Helpers.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false);
-            else if (Helpers.CheckAttributeName(reader, "title", Namespaces.Atom, alreadyLoaded))
-                o.Title = await Helpers.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false);
-            else if (Helpers.CheckAttributeName(reader, "length", Namespaces.Atom, alreadyLoaded))
-                o.Length = int.Parse(await Helpers.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false));
+            if (HelpExtensions.CheckAttributeName(reader, "href", Namespaces.Atom, alreadyLoaded))
+                o.Href = new(await HelpExtensions.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false));
+            else if (HelpExtensions.CheckAttributeName(reader, "rel", Namespaces.Atom, alreadyLoaded))
+                o.Rel = await HelpExtensions.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false);
+            else if (HelpExtensions.CheckAttributeName(reader, "type", Namespaces.Atom, alreadyLoaded))
+                o.Type = await HelpExtensions.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false);
+            else if (HelpExtensions.CheckAttributeName(reader, "hreflang", Namespaces.Atom, alreadyLoaded))
+                o.HrefLang = await HelpExtensions.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false);
+            else if (HelpExtensions.CheckAttributeName(reader, "title", Namespaces.Atom, alreadyLoaded))
+                o.Title = await HelpExtensions.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false);
+            else if (HelpExtensions.CheckAttributeName(reader, "length", Namespaces.Atom, alreadyLoaded))
+                o.Length = int.Parse(await HelpExtensions.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false));
         }
         reader.ReadStartElement();
         // ensure Href was writting
@@ -66,7 +66,7 @@ internal sealed class AtomLinkSerializer : ISerializationHelper<AtomLink>
         if (obj.Title != null)
             await writer.WriteAttributeStringAsync(prefix, "title", Namespaces.Atom, obj.Title.ToString()).ConfigureAwait(false);
         if (obj.Length.HasValue)
-            await writer.WriteAttributeStringAsync(prefix, "length", Namespaces.Atom, obj.Length.Value.ToString(CultureInfo.InvariantCulture)).ConfigureAwait(false);
+            await writer.WriteAttributeIntAsync(prefix, "length", Namespaces.Atom, obj.Length.Value).ConfigureAwait(false);
         await writer.WriteEndElementAsync().ConfigureAwait(false);
     }
 

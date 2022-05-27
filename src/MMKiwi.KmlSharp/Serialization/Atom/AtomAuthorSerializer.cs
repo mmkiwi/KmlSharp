@@ -28,14 +28,14 @@ internal class AtomAuthorSerializer : ISerializationHelper<AtomAuthor>
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
-                if (Helpers.CheckElementName(reader, "name", Namespaces.Atom, alreadyLoaded))
-                    o.Name = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                if (HelpExtensions.CheckElementName(reader, "name", Namespaces.Atom, alreadyLoaded))
+                    o.Name = await HelpExtensions.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
-                else if (Helpers.CheckElementName(reader, "email", Namespaces.Atom, alreadyLoaded))
-                    o.Email = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                else if (HelpExtensions.CheckElementName(reader, "email", Namespaces.Atom, alreadyLoaded))
+                    o.Email = await HelpExtensions.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
-                else if (Helpers.CheckElementName(reader, "uri", Namespaces.Atom, alreadyLoaded))
-                    o.Uri = new(await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
+                else if (HelpExtensions.CheckElementName(reader, "uri", Namespaces.Atom, alreadyLoaded))
+                    o.Uri = new(await HelpExtensions.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
             }
         }
         if (o.Name == null)

@@ -35,8 +35,8 @@ internal class KmlLineStyleSerializer : ISerializationHelper<KmlLineStyle>
             ct.ThrowIfCancellationRequested();
             if (reader.NodeType == XmlNodeType.Element)
             {
-                if (Helpers.CheckElementName(reader, "width", Namespaces.Kml, alreadyLoaded))
-                    o.Width = await Helpers.ReadElementDoubleAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                if (HelpExtensions.CheckElementName(reader, "width", Namespaces.Kml, alreadyLoaded))
+                    o.Width = await HelpExtensions.ReadElementDoubleAsync(reader, alreadyLoaded).ConfigureAwait(false);
                 else if (!await KmlAbstractColorSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt, ct).ConfigureAwait(false))
                 {
                     await KmlAbstractObjectSerializer.LoadUnknownElementAsync(reader, o, ct).ConfigureAwait(false);
@@ -58,7 +58,7 @@ internal class KmlLineStyleSerializer : ISerializationHelper<KmlLineStyle>
         await writer.WriteStartElementAsync(prefix, Tag, Namespaces.Kml).ConfigureAwait(false);
         await KmlAbstractColorSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns, ct).ConfigureAwait(false);
         if (o.Width != 1 || options.EmitValuesWhenDefault)
-            await writer.WriteElementStringAsync(prefix, "width", Namespaces.Kml, o.Width.ToString(CultureInfo.InvariantCulture)).ConfigureAwait(false);
+            await writer.WriteElementDoubleAsync(prefix, "width", Namespaces.Kml, o.Width).ConfigureAwait(false);
         await KmlAbstractColorSerializer.WriteAbstractElementsAsync(writer, o, options, ns, ct).ConfigureAwait(false);
         await writer.WriteEndElementAsync().ConfigureAwait(false);
     }

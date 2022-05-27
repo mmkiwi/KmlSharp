@@ -14,11 +14,11 @@ internal class KmlAbstractColorSerializer : IAbstractSerializationHelper<KmlAbst
 {
     public static async Task<bool> ReadAbstractElementsAsync(XmlReader reader, KmlAbstractColorStyle o, HashSet<string> alreadyLoaded, CancellationToken ct = default)
     {
-        if (Helpers.CheckElementName(reader, "color", Namespaces.Kml, alreadyLoaded))
-            o.Color = await Helpers.ReadElementColorAsync(reader, alreadyLoaded)
+        if (HelpExtensions.CheckElementName(reader, "color", Namespaces.Kml, alreadyLoaded))
+            o.Color = await HelpExtensions.ReadElementColorAsync(reader, alreadyLoaded)
                                    .ConfigureAwait(false);
-        else if (Helpers.CheckElementName(reader, "colorMode", Namespaces.Kml, alreadyLoaded))
-            o.ColorMode = await Helpers.ReadElementEnumAsync<KmlColorMode>(reader, alreadyLoaded)
+        else if (HelpExtensions.CheckElementName(reader, "colorMode", Namespaces.Kml, alreadyLoaded))
+            o.ColorMode = await HelpExtensions.ReadElementEnumAsync<KmlColorMode>(reader, alreadyLoaded)
                                        .ConfigureAwait(false);
         else
             return await KmlAbstractSubStyleSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoaded, ct)

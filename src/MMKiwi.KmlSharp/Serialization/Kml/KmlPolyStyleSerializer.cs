@@ -35,10 +35,10 @@ internal class KmlPolyStyleSerializer : ISerializationHelper<KmlPolyStyle>
             ct.ThrowIfCancellationRequested();
             if (reader.NodeType == XmlNodeType.Element)
             {
-                if (Helpers.CheckElementName(reader, "fill", Namespaces.Kml, alreadyLoaded))
-                    o.Fill = await Helpers.ReadElementBoolAsync(reader, alreadyLoaded).ConfigureAwait(false);
-                else if (Helpers.CheckElementName(reader, "outline", Namespaces.Kml, alreadyLoaded))
-                    o.Outline = await Helpers.ReadElementBoolAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                if (HelpExtensions.CheckElementName(reader, "fill", Namespaces.Kml, alreadyLoaded))
+                    o.Fill = await HelpExtensions.ReadElementBoolAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                else if (HelpExtensions.CheckElementName(reader, "outline", Namespaces.Kml, alreadyLoaded))
+                    o.Outline = await HelpExtensions.ReadElementBoolAsync(reader, alreadyLoaded).ConfigureAwait(false);
                 else if (!await KmlAbstractColorSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt, ct).ConfigureAwait(false))
                 {
                     await KmlAbstractObjectSerializer.LoadUnknownElementAsync(reader, o, ct).ConfigureAwait(false);

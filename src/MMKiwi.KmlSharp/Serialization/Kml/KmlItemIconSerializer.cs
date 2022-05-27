@@ -38,10 +38,10 @@ internal class KmlItemIconSerializer : ISerializationHelper<KmlItemIcon>
                 throw new StackOverflowException();
             if (reader.NodeType == XmlNodeType.Element)
             {
-                if (Helpers.CheckElementName(reader, "state", Namespaces.Kml, alreadyLoaded))
-                    o.State = new(await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
-                else if (Helpers.CheckElementName(reader, "href", Namespaces.Kml, alreadyLoaded))
-                    o.Href = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                if (HelpExtensions.CheckElementName(reader, "state", Namespaces.Kml, alreadyLoaded))
+                    o.State = new(await HelpExtensions.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
+                else if (HelpExtensions.CheckElementName(reader, "href", Namespaces.Kml, alreadyLoaded))
+                    o.Href = await HelpExtensions.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
                 else if (!await KmlAbstractObjectSerializer.ReadAbstractElementsAsync(reader, o, alreadyLoadedAtt, ct).ConfigureAwait(false))
                 {
                     await KmlAbstractObjectSerializer.LoadUnknownElementAsync(reader, o, ct).ConfigureAwait(false);

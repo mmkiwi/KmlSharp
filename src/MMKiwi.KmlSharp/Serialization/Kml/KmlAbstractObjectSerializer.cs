@@ -14,10 +14,10 @@ internal class KmlAbstractObjectSerializer : IAbstractSerializationHelper<KmlAbs
 {
     public static async Task<bool> ReadAbstractAttributesAsync(XmlReader reader, KmlAbstractObject o, HashSet<string> alreadyLoaded, CancellationToken ct = default)
     {
-        if (Helpers.CheckAttributeName(reader, "id", Namespaces.Kml, alreadyLoaded))
-            o.Id = new(await Helpers.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false));
-        else if (Helpers.CheckAttributeName(reader, "targetId", Namespaces.Kml, alreadyLoaded))
-            o.TargetId = await Helpers.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false);
+        if (HelpExtensions.CheckAttributeName(reader, "id", Namespaces.Kml, alreadyLoaded))
+            o.Id = new(await HelpExtensions.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false));
+        else if (HelpExtensions.CheckAttributeName(reader, "targetId", Namespaces.Kml, alreadyLoaded))
+            o.TargetId = await HelpExtensions.ReadAttributeString(reader, alreadyLoaded).ConfigureAwait(false);
         else
             return false;
         return true;

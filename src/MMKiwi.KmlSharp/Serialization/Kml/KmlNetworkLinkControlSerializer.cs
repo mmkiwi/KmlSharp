@@ -35,31 +35,31 @@ internal class KmlNetworkLinkControlSerializer : ISerializationHelper<KmlNetwork
             ct.ThrowIfCancellationRequested();
             if (reader.NodeType == XmlNodeType.Element)
             {
-                if (Helpers.CheckElementName(reader, "minRefreshPeriod", Namespaces.Kml, alreadyLoaded))
-                    o.MinRefreshPeriod = double.Parse(await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
+                if (HelpExtensions.CheckElementName(reader, "minRefreshPeriod", Namespaces.Kml, alreadyLoaded))
+                    o.MinRefreshPeriod = double.Parse(await HelpExtensions.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
 
-                else if (Helpers.CheckElementName(reader, "maxSessionlength", Namespaces.Kml, alreadyLoaded))
-                    o.MaxSessionLength = double.Parse(await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
+                else if (HelpExtensions.CheckElementName(reader, "maxSessionlength", Namespaces.Kml, alreadyLoaded))
+                    o.MaxSessionLength = double.Parse(await HelpExtensions.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
 
-                else if (Helpers.CheckElementName(reader, "cookie", Namespaces.Kml, alreadyLoaded))
-                    o.Cookie = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                else if (HelpExtensions.CheckElementName(reader, "cookie", Namespaces.Kml, alreadyLoaded))
+                    o.Cookie = await HelpExtensions.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
-                else if (Helpers.CheckElementName(reader, "message", Namespaces.Kml, alreadyLoaded))
-                    o.Message = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                else if (HelpExtensions.CheckElementName(reader, "message", Namespaces.Kml, alreadyLoaded))
+                    o.Message = await HelpExtensions.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
-                else if (Helpers.CheckElementName(reader, "linkName", Namespaces.Kml, alreadyLoaded))
-                    o.LinkName = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                else if (HelpExtensions.CheckElementName(reader, "linkName", Namespaces.Kml, alreadyLoaded))
+                    o.LinkName = await HelpExtensions.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
-                else if (Helpers.CheckElementName(reader, "linkDescription", Namespaces.Kml, alreadyLoaded))
-                    o.LinkDescription = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                else if (HelpExtensions.CheckElementName(reader, "linkDescription", Namespaces.Kml, alreadyLoaded))
+                    o.LinkDescription = await HelpExtensions.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
-                else if (Helpers.CheckElementName(reader, "linkSnipper", Namespaces.Kml, alreadyLoaded))
-                    o.LinkSnippet = await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
+                else if (HelpExtensions.CheckElementName(reader, "linkSnipper", Namespaces.Kml, alreadyLoaded))
+                    o.LinkSnippet = await HelpExtensions.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false);
 
-                else if (Helpers.CheckElementName(reader, "expires", Namespaces.Kml, alreadyLoaded))
-                    o.Expires = Helpers.ToDateTime(await Helpers.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
+                else if (HelpExtensions.CheckElementName(reader, "expires", Namespaces.Kml, alreadyLoaded))
+                    o.Expires = HelpExtensions.ToDateTime(await HelpExtensions.ReadElementStringAsync(reader, alreadyLoaded).ConfigureAwait(false));
 
-                else if (Helpers.CheckElementName(reader, "email", Namespaces.Kml, alreadyLoaded))
+                else if (HelpExtensions.CheckElementName(reader, "email", Namespaces.Kml, alreadyLoaded))
                 {
                     await KmlAbstractObjectSerializer.LoadUnknownElementAsync(reader, o, ct).ConfigureAwait(false);
                 }
