@@ -40,7 +40,6 @@ public class KmlLabelStyleTests
         _ = compObject.Should().BeEquivalentTo(labelStyle);
     }
 
-
     [Fact]
     public async Task SerializeWithRequired()
     {

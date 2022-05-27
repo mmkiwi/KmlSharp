@@ -94,9 +94,9 @@ public class KmlListStyleTests
         const string xml = $"""
             <ListStyle xmlns="{Namespaces.Kml}" />
             """;
-        KmlListStyle ListStyle = new();
+        KmlListStyle listStyle = new();
         KmlListStyle? compObject = await xml.Deserialize<KmlListStyle>();
-        _ = compObject.Should().BeEquivalentTo(ListStyle);
+        _ = compObject.Should().BeEquivalentTo(listStyle);
     }
 
     [Fact]

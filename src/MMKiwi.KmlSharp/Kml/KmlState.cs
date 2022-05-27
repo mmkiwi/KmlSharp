@@ -39,13 +39,20 @@ public record struct KmlState(bool Open, bool Closed, bool Error, bool Fetching0
     public override string ToString()
     {
         List<string> states = new(6);
-        if (Open) states.Add("open");
-        if (Closed) states.Add("closed");
-        if (Error) states.Add("error");
-        if (Fetching0) states.Add("fetching0");
-        if (Fetching1) states.Add("fetching1");
-        if (Fetching2) states.Add("fetching2");
-        if (!string.IsNullOrWhiteSpace(OtherStates)) states.Add(OtherStates);
+        if (Open)
+            states.Add("open");
+        if (Closed)
+            states.Add("closed");
+        if (Error)
+            states.Add("error");
+        if (Fetching0)
+            states.Add("fetching0");
+        if (Fetching1)
+            states.Add("fetching1");
+        if (Fetching2)
+            states.Add("fetching2");
+        if (!string.IsNullOrWhiteSpace(OtherStates))
+            states.Add(OtherStates);
         return string.Join(" ", states);
     }
 }
