@@ -24,6 +24,7 @@ public static partial class KmlSerializer
         AddSerializer<KmlObj.KmlLod, Kml.KmlLodSerializer>();
         AddSerializer<KmlObj.KmlOrientation, Kml.KmlOrientationSerializer>();
         AddSerializer<KmlObj.KmlAlias, Kml.KmlAliasSerializer>();
+        AddSerializer<KmlObj.KmlViewVolume, Kml.KmlViewVolumeSerializer>();
     }
 
     private static void AddSerializer<TObject, THelper>()

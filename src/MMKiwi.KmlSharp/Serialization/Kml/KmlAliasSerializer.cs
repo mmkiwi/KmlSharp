@@ -60,9 +60,9 @@ internal class KmlAliasSerializer : ISerializationHelper<KmlAlias>
         await writer.WriteStartElementAsync(prefix, Tag, Namespaces.Kml).ConfigureAwait(false);
         await KmlAbstractObjectSerializer.WriteAbstractAttributesAsync(writer, o, prefix, options, ns, ct).ConfigureAwait(false);
         if (!string.IsNullOrWhiteSpace(o.TargetHref) || options.EmitValuesWhenDefault)
-            await writer.WriteElementStringAsync(prefix, "targetHref", Namespaces.Kml, o.TargetHref).ConfigureAwait(false);
+            await writer.WriteElementStringAsync(prefix, "targetHref", Namespaces.Kml, o.TargetHref ?? "").ConfigureAwait(false);
         if (!string.IsNullOrWhiteSpace(o.SourceHref) || options.EmitValuesWhenDefault)
-            await writer.WriteElementStringAsync(prefix, "sourceHref", Namespaces.Kml, o.SourceHref).ConfigureAwait(false);
+            await writer.WriteElementStringAsync(prefix, "sourceHref", Namespaces.Kml, o.SourceHref ?? "").ConfigureAwait(false);
         await KmlAbstractObjectSerializer.WriteAbstractElementsAsync(writer, o, options, ns, ct).ConfigureAwait(false);
         await writer.WriteEndElementAsync().ConfigureAwait(false);
     }

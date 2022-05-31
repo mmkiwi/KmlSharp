@@ -68,6 +68,6 @@
 | kml:Track                 | done |            |           |
 | kml:Update                | done |            |           |
 | kml:Vect2                 | done |            |           |
-| kml:ViewVolume            | done |            |           |
+| kml:ViewVolume            | done | done       | done      |
 | kml:Wait                  | done |            |           |
 | xAL:*                     |      |            |           |
