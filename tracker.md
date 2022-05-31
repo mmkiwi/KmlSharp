@@ -17,18 +17,14 @@
 | kml:AbstractUpdateOption  | done |            | N/A       |
 | kml:AbstractView          | done |            |           |
 | kml:Alias                 | done |            |           |
-| kml:AltitudeMode          | done |            |           |
 | kml:AnimatedUpdated       | done |            |           |
 | kml:BalloonStyle          | done |            |           |
 | kml:Change                | done |            |           |
-| kml:ColorMode             | done |            |           |
 | kml:Coordinates           | done |            |           |
 | kml:Create                | done |            |           |
 | kml:Delete                | done |            |           |
-| kml:DisplayMode           | done |            |           |
 | kml:Document              | done |            | started   |
 | kml:FlyTo                 | done |            |           |
-| kml:FlyToMode             | done |            |           |
 | kml:Folder                | done |            |           |
 | kml:GroundOverlay         | done |            |           |
 | kml:Icon                  | done |            |           |
@@ -43,7 +39,6 @@
 | kml:LineString            | done | done       | done      |
 | kml:LineStyle             | done |            |           |
 | kml:Link                  | done |            |           |
-| kml:ListItemType          | done |            |           |
 | kml:ListStyle             | done | done       | done      |
 | kml:Location              | done |            |           |
 | kml:Lod                   | done | done       | done      |
@@ -52,12 +47,11 @@
 | kml:MultiTrack            | done |            |           |
 | kml:NetworkLink           | done |            |           |
 | kml:NetworkLinkControl    | done | started    |           |
-| kml:Orientation           | done |            |           |
+| kml:Orientation           | done | done       | done      |
 | kml:Pair                  | done |            |           |
 | kml:PhotoOverlay          | done |            |           |
 | kml:Placemark             | done |            |           |
 | kml:Playlist              | done |            |           |
-| kml:PlayMode              | done |            |           |
 | kml:Point                 | done |            |           |
 | kml:Polygon               | done |            |           |
 | kml:PolyStyle             | done | done       | done      |
@@ -66,12 +60,10 @@
 | kml:Root                  | done |            |           |
 | kml:Scale                 | done | done       | done      |
 | kml:ScreenOverlay         | done |            |           |
-| kml:SeaFloorAltitudeMode  | done |            |           |
 | kml:SoundCue              | done |            |           |
 | kml:State                 | done |            |           |
 | kml:Style                 | done |            |           |
 | kml:StyleMap              | done |            |           |
-| kml:StyleState            | done |            |           |
 | kml:Tour                  | done |            |           |
 | kml:TourControl           | done |            |           |
 | kml:Track                 | done |            |           |

@@ -25,7 +25,7 @@ public class KmlLabelStyleTests
     }
 
     [Fact]
-    public async Task DeerializeWithUnknown()
+    public async Task DeserializeWithUnknown()
     {
         const string xml = $"""
             <LabelStyle xmlns="{Namespaces.Kml}" xmlns:html="{Namespaces.Html}" html:style="display:none;" >

@@ -25,7 +25,7 @@ public class KmlLodTests
     }
 
     [Fact]
-    public async Task DeerializeWithUnknown()
+    public async Task DeserializeWithUnknown()
     {
         const string xml = $"""
             <Lod xmlns="{Namespaces.Kml}" xmlns:html="{Namespaces.Html}" html:style="display:none;" >

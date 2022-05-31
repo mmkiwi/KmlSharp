@@ -12,8 +12,3 @@ public class KmlPhotoOverlay : KmlAbstractOverlay
     public KmlPoint? Point { get; set; }
     public KmlShape Shape { get; set; } = KmlShape.Rectangle;
 }
-
-public enum KmlShape
-{
-    Rectangle, Cylinder, Sphere
-}
