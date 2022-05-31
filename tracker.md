@@ -16,7 +16,7 @@
 | kml:AbstractTourPrimitive | done |            | N/A       |
 | kml:AbstractUpdateOption  | done |            | N/A       |
 | kml:AbstractView          | done |            |           |
-| kml:Alias                 | done |            |           |
+| kml:Alias                 | done | done       | done      |
 | kml:AnimatedUpdated       | done |            |           |
 | kml:BalloonStyle          | done |            |           |
 | kml:Change                | done |            |           |
@@ -61,7 +61,6 @@
 | kml:Scale                 | done | done       | done      |
 | kml:ScreenOverlay         | done |            |           |
 | kml:SoundCue              | done |            |           |
-| kml:State                 | done |            |           |
 | kml:Style                 | done |            |           |
 | kml:StyleMap              | done |            |           |
 | kml:Tour                  | done |            |           |

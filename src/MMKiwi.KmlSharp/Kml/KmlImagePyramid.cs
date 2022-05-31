@@ -11,8 +11,3 @@ public class KmlImagePyramid
     public int MaxHeight { get; set; } = 0;
     public KmlGridOrigin GridOrigin { get; set; } = KmlGridOrigin.LowerLeft;
 }
-
-public enum KmlGridOrigin
-{
-    LowerLeft, UpperLeft
-}
