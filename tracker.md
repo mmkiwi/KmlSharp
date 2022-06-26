@@ -2,19 +2,19 @@
 |:--------------------------|-----:|-----------:|----------:|
 | atom:author               | done | done       | done      |
 | atom:link                 | done | done       | done      |
-| kml:AbstractColorStyle    | done |            | N/A       |
-| kml:AbstractContainer     | done |            | N/A       |
-| kml:AbstractExtent        | done |            | N/A       |
+| kml:AbstractColorStyle    | done | done       | N/A       |
+| kml:AbstractContainer     | done | empty      | N/A       |
+| kml:AbstractExtent        | done | empty      | N/A       |
 | kml:AbstractFeature       | done |            | N/A       |
-| kml:AbstractGeometry      | done |            | N/A       |
-| kml:AbstractLatLonBox     | done |            | N/A       |
+| kml:AbstractGeometry      | done | empty      | N/A       |
+| kml:AbstractLatLonBox     | done | done       | N/A       |
 | kml:AbstractObject        | done | done       | N/A       |
 | kml:AbstractOverlay       | done |            | N/A       |
-| kml:AbstractStyleSelector | done |            | N/A       |
+| kml:AbstractStyleSelector | done | empty      | N/A       |
 | kml:AbstractSubStyle      | done | done       | N/A       |
-| kml:AbstractTime          | done |            | N/A       |
-| kml:AbstractTourPrimitive | done |            | N/A       |
-| kml:AbstractUpdateOption  | done |            | N/A       |
+| kml:AbstractTime          | done | empty      | N/A       |
+| kml:AbstractTourPrimitive | done | empty      | N/A       |
+| kml:AbstractUpdateOption  | done | empty      | N/A       |
 | kml:AbstractView          | done |            |           |
 | kml:Alias                 | done | done       | done      |
 | kml:AnimatedUpdated       | done |            |           |

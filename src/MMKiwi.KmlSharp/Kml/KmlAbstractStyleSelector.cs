@@ -4,6 +4,6 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public abstract class KmlAbstractStyleSelector
+public abstract class KmlAbstractStyleSelector: KmlAbstractObject
 {
 }

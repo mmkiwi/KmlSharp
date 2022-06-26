@@ -4,6 +4,8 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public abstract class KmlAbstractTime
+public abstract class KmlAbstractTime: KmlAbstractObject
 {
+    protected KmlAbstractTime(string value) { }
+    public abstract string ToKmlString();
 }

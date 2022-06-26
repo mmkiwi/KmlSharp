@@ -4,6 +4,7 @@
 
 namespace MMKiwi.KmlSharp.Kml;
 
-public abstract class KmlAbstractView
+public abstract class KmlAbstractView : KmlAbstractObject
 {
+    public KmlAbstractTime? TimePrimitive { get; set; }
 }
